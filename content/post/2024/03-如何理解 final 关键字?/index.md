@@ -7,7 +7,7 @@ image: ""
 license: false
 hidden: false
 comments: false
-draft: true
+draft: false
 tags: ["Java", "final"]
 categories: ["Java"]
 # weight: 1 # You can add weight to some posts to override the default sorting (date descending)
@@ -186,3 +186,58 @@ class Child extends Parent {
 final class UtilityClass {}
 class SubClass extends UtilityClass {} // 编译错误：Cannot inherit from final class
 ```
+
+## 边界场景
+
+### 反射修改 final 字段
+
+**理论上的可能性：** 通过反射 API（如 Field.setAccessible(true)），可以修改 final 字段的值。
+
+```java
+class MyClass {
+    final int value = 10;
+}
+
+public static void main(String[] args) throws Exception {
+    MyClass obj = new MyClass();
+    Field field = MyClass.class.getDeclaredField("value");
+    field.setAccessible(true);
+    field.setInt(obj, 20); // 修改 final 字段的值
+    System.out.println(obj.value); // 输出 20（旧版本 Java 可能允许，新版默认禁止）
+}
+```
+
+**实际限制：**
+
+- 从 Java 12 开始，默认禁止通过反射修改 final 字段，会抛出 IllegalAccessException。
+- 可通过 JVM 参数 --add-opens java.base/java.lang=ALL-UNNAMED 绕过，但这属于破坏性操作，违背语言设计原则。
+
+### 引用类型变量的内部可变性
+
+**final 仅约束引用，不约束对象内容：**
+
+```java
+final List<String> list = new ArrayList<>();
+list.add("Java"); // 合法操作：修改对象内部状态
+// list = new ArrayList<>(); // 非法操作：修改引用
+```
+
+此时 `final` 强制的是引用不可变，但对象本身可能仍可变（除非对象自身设计为不可变，如 `String`）。
+
+## final 是强制的？
+
+### 语言规范定义
+
+Java 语言规范明确要求 `final` 的约束必须被遵守，否则代码无法通过编译（[JLS §4.12.4](https://docs.oracle.com/javase/specs/jls/se17/html/jls-4.html#jls-4.12.4)）。
+
+### 编译器和运行时的双重保障
+
+- 编译器：静态检查语法合法性。
+- JVM：运行时内存模型保证 `final` 字段的初始化安全（如 `final` 字段的写入对其他线程可见）。
+
+### 设计哲学
+
+`final` 的强制性是为了保障代码的可靠性和一致性。例如：
+
+- 不可变对象（String）依赖 `final` 的强制约束。
+- 工具类（如 Math）通过 `final` 类禁止继承，确保方法逻辑不被篡改。
