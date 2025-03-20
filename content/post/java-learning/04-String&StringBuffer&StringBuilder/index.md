@@ -27,6 +27,24 @@ categories: ["Java"]
 
 ## 实现分析
 
+Java字符串体系结构
+
+```text
+┌───────────┐        ┌───────────────────────┐
+│  String   │        │ AbstractStringBuilder │
+│-----------│        │-----------------------│
+│ - value[] │<──────>│ + value[]             │
+│ - hash    │        │ + count               │
+└────┬──────┘        └──────┬────────────────┘
+     │                      │
+     ▼                      ▼
+┌───────────────┐    ┌─────────────────┐
+│ StringBuffer  │    │  StringBuilder  │
+│---------------│    │-----------------│
+│ + sync methods│    │ - non-sync      │
+└───────────────┘    └─────────────────┘
+```
+
 ### String
 
 ```java
@@ -82,6 +100,7 @@ public final class StringBuilder
 
 - 动态扩容：初始容量16（字符数）
 - 线程安全：StringBuffer通过方法级同步保证线程安全（`synchronized` 关键字修饰）
+- 继承抽象类：StringBuffer和StringBuilder都继承了AbstractStringBuilder
 
 #### 扩容分析，基于jdk17
 
