@@ -63,7 +63,7 @@ public final class String
 
 - 不可变性：value数组被声明为final，任何修改都会创建新对象
 - 内存优化：从JDK9开始改用byte[]存储，支持LATIN1/UTF-16编码
-- 常量池：字符串字面量自动加入常量池，减少重复创建
+- 常量池：**字符串字面量**自动加入常量池，减少重复创建
 
 ### StringBuffer & StringBuilder
 
