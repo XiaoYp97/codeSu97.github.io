@@ -7,9 +7,9 @@ image: ""
 license: false
 hidden: false
 comments: false
-draft: true
-tags:
-categories:
+draft: false
+tags: ["IO"]
+categories: ["IO"]
 # weight: 1 # You can add weight to some posts to override the default sorting (date descending)
 ---
 
