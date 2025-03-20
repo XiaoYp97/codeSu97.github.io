@@ -7,9 +7,9 @@ image: ""
 license: false
 hidden: false
 comments: false
-draft: true
-tags:
-categories:
+draft: false
+tags: ["数据库", "驱动", "ODBC"]
+categories: ["数据库", "驱动"]
 # weight: 1 # You can add weight to some posts to override the default sorting (date descending)
 ---
 
