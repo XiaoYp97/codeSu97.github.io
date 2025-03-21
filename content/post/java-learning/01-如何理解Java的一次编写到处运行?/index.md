@@ -9,7 +9,7 @@ hidden: false
 comments: false
 draft: false
 tags: ["Java", "JVM"]
-categories: ["JVM"]
+categories: ["Java", "JVM"]
 # weight: 1 # You can add weight to some posts to override the default sorting (date descending)
 ---
 
@@ -34,4 +34,4 @@ categories: ["JVM"]
     2. 这一步是传统的AOT（Ahead-Of-Time, 预先编译，编译在程序运行前完成）编译，生成中间代码而非机器码
 2. 运行时阶段：
     1. **解释执行：** JVM（如HotSpot）首先逐行解释执行字节码（`.class`）。
-    2. **JIT编译：** 对于频繁执行的代码（热点代码，方法级代码），JVM触发JIT编译器（如C1/C2）将其编译为本地机器码，大幅提升性能，属于运行时动态优化。
+    2. **JIT编译：** （Just in time，即时编译）对于频繁执行的代码（热点代码，方法级代码），JVM触发JIT编译器（如C1/C2）将其编译为本地机器码，大幅提升性能，属于运行时动态优化。
