@@ -1,0 +1,206 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="iptables 是什么 iptables 是运行在用户空间的应用软件，通过控制Linux内核netfilter模块，来管理网络数据包的处理和转发。iptables只支持处理ipv4数据包，对于ipv6数据包，则需要ip6tables。\niptables命令介绍 1 2 3 4 5 6 7 8 9 10 11 12 13 # iptables --help iptables v1.4.21 Usage: iptables -[ACD] chain rule-specification [options] iptables -I chain [rulenum] rule-specification [options] iptables -R chain rulenum rule-specification [options] iptables -D chain rulenum [options] iptables -[LS] [chain [rulenum]] [options] iptables -[FZ] [chain] [options] iptables -[NX] chain iptables -E old-chain-name new-chain-name iptables -P chain target [options] iptables -h (print this help information) iptables基本命令 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 --append -A chain 添加一个规则到链的末尾 --check -C chain 检查某一条链是否存在 --delete -D chain 删除匹配的链 --delete -D chain rulenum 删除指定链的某一条规则 --insert -I chain [rulenum] 根据给出的规则序号向所选链中插入一条或更多规则。所以，如果规则序号为1， 规则会被插入链的头部。这也是不指定规则序号时的默认方式。 --replace -R chain rulenum 修改指定链中的某一条规则 --list -L [chain [rulenum]] 列出指定链中的规则 --list-rules -S [chain [rulenum]] 打印出指定链中的规则 --flush -F [chain] 删除指定链中的规则 --zero -Z [chain [rulenum]] 把指定链，或者表中的所有链上的所有计数器清零 --new -N chain 创建一条用户自定义链 --delete-chain -X [chain] 删除一条用户自定义链 --policy -P chain target 该表某条链的策略 --rename-chain -E old-chain new-chain 修改链的名称(只有用户自定义链的名称可以被修改） iptables选项参数 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 [!] --protocol -p proto 规则或者包检查的协议。指定协议可以是tcp、udp、icmp中的一个或全部，也可以是数值，代表这些协议中的某一个。 当然也可以使用在/etc/protocols中定义的协议名。在协议名前加'!'表示相反的规则。数字0相当于all。Protocol all会匹配所有协议，而且这是缺省的选项。在和check命令结合时，all可以不被使用 [!] --source -s address[/mask][...] 指定源地址，可以是主机名、网络名或IP地址。mask说明可以是网络掩码或清楚的数字。标志--src是这个选项的简写。 [!] --destination -d address[/mask][...] 指定目标地址。标志--dst是这个选项的简写 --jump -j target 执行指定的动作 --goto -g chain 跳转到指定的链 --match -m match 扩展匹配 --numeric -n 以数字的形式显示IP地址和端口 [!] --in-interface -i input name[+] 匹配由指定网络接口进入的数据包 [!] --out-interface -o output name[+] 由指定接口发出的数据包 [!] --fragment -f 这意味着在分片的包中，规则只询问第二及以后的片 --exact -x 扩展数字。显示包和字节计数器的精确值，代替用K、M、G表示的约数。这个选项仅能用于-L选项 --line-numbers 当列表显示规则时，在每个规则前面加上行号，与该规则在链中的位置相对应。 1. 针对 tcp 的扩展 当--protocol tcp被指定，且其他匹配的扩展未被指定时，这些扩展被装载。它提供以下选项：\n"><title>Iptables</title>
+<link rel=canonical href=https://codeSu97.github.io/p/iptables/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="Iptables"><meta property='og:description' content="iptables 是什么 iptables 是运行在用户空间的应用软件，通过控制Linux内核netfilter模块，来管理网络数据包的处理和转发。iptables只支持处理ipv4数据包，对于ipv6数据包，则需要ip6tables。\niptables命令介绍 1 2 3 4 5 6 7 8 9 10 11 12 13 # iptables --help iptables v1.4.21 Usage: iptables -[ACD] chain rule-specification [options] iptables -I chain [rulenum] rule-specification [options] iptables -R chain rulenum rule-specification [options] iptables -D chain rulenum [options] iptables -[LS] [chain [rulenum]] [options] iptables -[FZ] [chain] [options] iptables -[NX] chain iptables -E old-chain-name new-chain-name iptables -P chain target [options] iptables -h (print this help information) iptables基本命令 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 --append -A chain 添加一个规则到链的末尾 --check -C chain 检查某一条链是否存在 --delete -D chain 删除匹配的链 --delete -D chain rulenum 删除指定链的某一条规则 --insert -I chain [rulenum] 根据给出的规则序号向所选链中插入一条或更多规则。所以，如果规则序号为1， 规则会被插入链的头部。这也是不指定规则序号时的默认方式。 --replace -R chain rulenum 修改指定链中的某一条规则 --list -L [chain [rulenum]] 列出指定链中的规则 --list-rules -S [chain [rulenum]] 打印出指定链中的规则 --flush -F [chain] 删除指定链中的规则 --zero -Z [chain [rulenum]] 把指定链，或者表中的所有链上的所有计数器清零 --new -N chain 创建一条用户自定义链 --delete-chain -X [chain] 删除一条用户自定义链 --policy -P chain target 该表某条链的策略 --rename-chain -E old-chain new-chain 修改链的名称(只有用户自定义链的名称可以被修改） iptables选项参数 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 [!] --protocol -p proto 规则或者包检查的协议。指定协议可以是tcp、udp、icmp中的一个或全部，也可以是数值，代表这些协议中的某一个。 当然也可以使用在/etc/protocols中定义的协议名。在协议名前加'!'表示相反的规则。数字0相当于all。Protocol all会匹配所有协议，而且这是缺省的选项。在和check命令结合时，all可以不被使用 [!] --source -s address[/mask][...] 指定源地址，可以是主机名、网络名或IP地址。mask说明可以是网络掩码或清楚的数字。标志--src是这个选项的简写。 [!] --destination -d address[/mask][...] 指定目标地址。标志--dst是这个选项的简写 --jump -j target 执行指定的动作 --goto -g chain 跳转到指定的链 --match -m match 扩展匹配 --numeric -n 以数字的形式显示IP地址和端口 [!] --in-interface -i input name[+] 匹配由指定网络接口进入的数据包 [!] --out-interface -o output name[+] 由指定接口发出的数据包 [!] --fragment -f 这意味着在分片的包中，规则只询问第二及以后的片 --exact -x 扩展数字。显示包和字节计数器的精确值，代替用K、M、G表示的约数。这个选项仅能用于-L选项 --line-numbers 当列表显示规则时，在每个规则前面加上行号，与该规则在链中的位置相对应。 1. 针对 tcp 的扩展 当--protocol tcp被指定，且其他匹配的扩展未被指定时，这些扩展被装载。它提供以下选项：\n"><meta property='og:url' content='https://codeSu97.github.io/p/iptables/'><meta property='og:site_name' content='XiaoYp - Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Linux'><meta property='article:tag' content='防火墙'><meta property='article:published_time' content='2022-12-28T21:15:49+08:00'><meta property='article:modified_time' content='2022-12-28T21:15:49+08:00'><meta name=twitter:title content="Iptables"><meta name=twitter:description content="iptables 是什么 iptables 是运行在用户空间的应用软件，通过控制Linux内核netfilter模块，来管理网络数据包的处理和转发。iptables只支持处理ipv4数据包，对于ipv6数据包，则需要ip6tables。\niptables命令介绍 1 2 3 4 5 6 7 8 9 10 11 12 13 # iptables --help iptables v1.4.21 Usage: iptables -[ACD] chain rule-specification [options] iptables -I chain [rulenum] rule-specification [options] iptables -R chain rulenum rule-specification [options] iptables -D chain rulenum [options] iptables -[LS] [chain [rulenum]] [options] iptables -[FZ] [chain] [options] iptables -[NX] chain iptables -E old-chain-name new-chain-name iptables -P chain target [options] iptables -h (print this help information) iptables基本命令 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 --append -A chain 添加一个规则到链的末尾 --check -C chain 检查某一条链是否存在 --delete -D chain 删除匹配的链 --delete -D chain rulenum 删除指定链的某一条规则 --insert -I chain [rulenum] 根据给出的规则序号向所选链中插入一条或更多规则。所以，如果规则序号为1， 规则会被插入链的头部。这也是不指定规则序号时的默认方式。 --replace -R chain rulenum 修改指定链中的某一条规则 --list -L [chain [rulenum]] 列出指定链中的规则 --list-rules -S [chain [rulenum]] 打印出指定链中的规则 --flush -F [chain] 删除指定链中的规则 --zero -Z [chain [rulenum]] 把指定链，或者表中的所有链上的所有计数器清零 --new -N chain 创建一条用户自定义链 --delete-chain -X [chain] 删除一条用户自定义链 --policy -P chain target 该表某条链的策略 --rename-chain -E old-chain new-chain 修改链的名称(只有用户自定义链的名称可以被修改） iptables选项参数 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 [!] --protocol -p proto 规则或者包检查的协议。指定协议可以是tcp、udp、icmp中的一个或全部，也可以是数值，代表这些协议中的某一个。 当然也可以使用在/etc/protocols中定义的协议名。在协议名前加'!'表示相反的规则。数字0相当于all。Protocol all会匹配所有协议，而且这是缺省的选项。在和check命令结合时，all可以不被使用 [!] --source -s address[/mask][...] 指定源地址，可以是主机名、网络名或IP地址。mask说明可以是网络掩码或清楚的数字。标志--src是这个选项的简写。 [!] --destination -d address[/mask][...] 指定目标地址。标志--dst是这个选项的简写 --jump -j target 执行指定的动作 --goto -g chain 跳转到指定的链 --match -m match 扩展匹配 --numeric -n 以数字的形式显示IP地址和端口 [!] --in-interface -i input name[+] 匹配由指定网络接口进入的数据包 [!] --out-interface -o output name[+] 由指定接口发出的数据包 [!] --fragment -f 这意味着在分片的包中，规则只询问第二及以后的片 --exact -x 扩展数字。显示包和字节计数器的精确值，代替用K、M、G表示的约数。这个选项仅能用于-L选项 --line-numbers 当列表显示规则时，在每个规则前面加上行号，与该规则在链中的位置相对应。 1. 针对 tcp 的扩展 当--protocol tcp被指定，且其他匹配的扩展未被指定时，这些扩展被装载。它提供以下选项：\n"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/37898221?v=4"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky compact"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src="https://avatars.githubusercontent.com/u/37898221?v=4" width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🇨🇳</span></figure><div class=site-meta><h1 class=site-name><a href=/>XiaoYp - Blog</a></h1><h2 class=site-description>想都是问题，做才是答案</h2></div></header><ol class=menu-social><li><a href=https://github.com/XiaoYp97 target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#iptables-是什么><strong>iptables 是什么</strong></a></li><li><a href=#iptables命令介绍><strong>iptables命令介绍</strong></a></li><li><a href=#iptables基本命令><strong>iptables基本命令</strong></a><ol><li><a href=#iptables选项参数><strong>iptables选项参数</strong></a><ol><li><a href=#1-针对-tcp-的扩展><strong>1. 针对 tcp 的扩展</strong></a></li><li><a href=#2-针对-udp-的扩展><strong>2. 针对 udp 的扩展</strong></a></li><li><a href=#3-针对-icmp-的扩展><strong>3. 针对 ICMP 的扩展</strong></a></li><li><a href=#4-针对-mac-的扩展><strong>4. 针对 mac 的扩展</strong></a></li><li><a href=#5-针对-limit-的扩展><strong>5. 针对 limit 的扩展</strong></a></li></ol></li></ol></li><li><a href=#iptables-targets-介绍><strong>iptables targets 介绍</strong></a><ol><li><a href=#1-accept><strong>1. ACCEPT</strong></a></li><li><a href=#2-drop><strong>2. DROP</strong></a></li><li><a href=#3-reject><strong>3. REJECT</strong></a></li><li><a href=#4-redirect><strong>4. REDIRECT</strong></a></li></ol></li><li><a href=#iptables常用命令><strong>iptables常用命令</strong></a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/linux/>Linux
+</a><a href=/categories/%E9%98%B2%E7%81%AB%E5%A2%99/>防火墙</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/iptables/>Iptables</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>2022-12-28</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 3 分钟</time></div></footer></div></header><section class=article-content><h2 id=iptables-是什么><strong>iptables 是什么</strong></h2><p>iptables 是运行在用户空间的应用软件，通过控制Linux内核netfilter模块，来管理网络数据包的处理和转发。iptables只支持处理ipv4数据包，对于ipv6数据包，则需要ip6tables。</p><h2 id=iptables命令介绍><strong>iptables命令介绍</strong></h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># iptables --help</span>
+</span></span><span class=line><span class=cl>iptables v1.4.21
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Usage: iptables -<span class=o>[</span>ACD<span class=o>]</span> chain rule-specification <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>       iptables -I chain <span class=o>[</span>rulenum<span class=o>]</span> rule-specification <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>       iptables -R chain rulenum rule-specification <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>       iptables -D chain rulenum <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>       iptables -<span class=o>[</span>LS<span class=o>]</span> <span class=o>[</span>chain <span class=o>[</span>rulenum<span class=o>]]</span> <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>       iptables -<span class=o>[</span>FZ<span class=o>]</span> <span class=o>[</span>chain<span class=o>]</span> <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>       iptables -<span class=o>[</span>NX<span class=o>]</span> chain
+</span></span><span class=line><span class=cl>       iptables -E old-chain-name new-chain-name
+</span></span><span class=line><span class=cl>       iptables -P chain target <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>       iptables -h <span class=o>(</span>print this <span class=nb>help</span> information<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=iptables基本命令><strong>iptables基本命令</strong></h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>--append  -A chain                      添加一个规则到链的末尾
+</span></span><span class=line><span class=cl>--check   -C chain                      检查某一条链是否存在
+</span></span><span class=line><span class=cl>--delete  -D chain                      删除匹配的链
+</span></span><span class=line><span class=cl>--delete  -D chain rulenum              删除指定链的某一条规则
+</span></span><span class=line><span class=cl>--insert  -I chain <span class=o>[</span>rulenum<span class=o>]</span>            根据给出的规则序号向所选链中插入一条或更多规则。所以，如果规则序号为1，
+</span></span><span class=line><span class=cl>                                        规则会被插入链的头部。这也是不指定规则序号时的默认方式。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--replace -R chain rulenum              修改指定链中的某一条规则
+</span></span><span class=line><span class=cl>--list    -L <span class=o>[</span>chain <span class=o>[</span>rulenum<span class=o>]]</span>          列出指定链中的规则
+</span></span><span class=line><span class=cl>--list-rules -S <span class=o>[</span>chain <span class=o>[</span>rulenum<span class=o>]]</span>       打印出指定链中的规则
+</span></span><span class=line><span class=cl>--flush   -F <span class=o>[</span>chain<span class=o>]</span>                    删除指定链中的规则
+</span></span><span class=line><span class=cl>--zero    -Z <span class=o>[</span>chain <span class=o>[</span>rulenum<span class=o>]]</span>          把指定链，或者表中的所有链上的所有计数器清零
+</span></span><span class=line><span class=cl>--new     -N chain                      创建一条用户自定义链
+</span></span><span class=line><span class=cl>--delete-chain   -X <span class=o>[</span>chain<span class=o>]</span>             删除一条用户自定义链
+</span></span><span class=line><span class=cl>--policy  -P chain target               该表某条链的策略
+</span></span><span class=line><span class=cl>--rename-chain  -E old-chain new-chain  修改链的名称<span class=o>(</span>只有用户自定义链的名称可以被修改）
+</span></span></code></pre></td></tr></table></div></div><h3 id=iptables选项参数><strong>iptables选项参数</strong></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>!<span class=o>]</span> --protocol  -p proto                规则或者包检查的协议。指定协议可以是tcp、udp、icmp中的一个或全部，也可以是数值，代表这些协议中的某一个。
+</span></span><span class=line><span class=cl>                                        当然也可以使用在/etc/protocols中定义的协议名。在协议名前加<span class=s1>&#39;!&#39;</span>表示相反的规则。数字0相当于all。Protocol
+</span></span><span class=line><span class=cl>                                        all会匹配所有协议，而且这是缺省的选项。在和check命令结合时，all可以不被使用
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>!<span class=o>]</span> --source    -s address<span class=o>[</span>/mask<span class=o>][</span>...<span class=o>]</span>  指定源地址，可以是主机名、网络名或IP地址。mask说明可以是网络掩码或清楚的数字。标志--src是这个选项的简写。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>!<span class=o>]</span> --destination -d address<span class=o>[</span>/mask<span class=o>][</span>...<span class=o>]</span> 指定目标地址。标志--dst是这个选项的简写
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--jump -j target                        执行指定的动作
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--goto -g chain                         跳转到指定的链
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--match  -m match                       扩展匹配
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--numeric     -n                        以数字的形式显示IP地址和端口
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>!<span class=o>]</span> --in-interface -i input name<span class=o>[</span>+<span class=o>]</span>     匹配由指定网络接口进入的数据包
+</span></span><span class=line><span class=cl><span class=o>[</span>!<span class=o>]</span> --out-interface -o output name<span class=o>[</span>+<span class=o>]</span>   由指定接口发出的数据包
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>!<span class=o>]</span> --fragment  -f                      这意味着在分片的包中，规则只询问第二及以后的片
+</span></span><span class=line><span class=cl>--exact       -x                        扩展数字。显示包和字节计数器的精确值，代替用K、M、G表示的约数。这个选项仅能用于-L选项
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--line-numbers                          当列表显示规则时，在每个规则前面加上行号，与该规则在链中的位置相对应。
+</span></span></code></pre></td></tr></table></div></div><h4 id=1-针对-tcp-的扩展><strong>1. 针对 tcp 的扩展</strong></h4><p>当<code>--protocol tcp</code>被指定，且其他匹配的扩展未被指定时，这些扩展被装载。它提供以下选项：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>--source-port <span class=o>[</span>!<span class=o>]</span> <span class=o>[</span>port<span class=o>[</span>:port<span class=o>]]</span>         源端口或端口范围指定，也可以使用服务名或端口号。如果使用端口范围，若首端口号忽略则默认为0，若尾端口号忽略则
+</span></span><span class=line><span class=cl>                                        默认为65535。这个选项可以简写为--sport
+</span></span><span class=line><span class=cl>--destionation-port <span class=o>[</span>!<span class=o>]</span> <span class=o>[</span>port:<span class=o>[</span>port<span class=o>]]</span>   目标端口或端口范围指定。这个选项可以使用--dport别名来代替
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--tcp-flags <span class=o>[</span>!<span class=o>]</span> mask comp               匹配指定的TCP标记。第一个参数是我们要检查的标记，一个用逗号分开的列表，第二个参数是用逗号分开的标记表,是必须
+</span></span><span class=line><span class=cl>                                        被设置的。标记如下：SYN ACK FIN RST URG PSH ALL NONE。例如我们有如下这条命令：
+</span></span><span class=line><span class=cl>                                                iptables -A FORWARD -p tcp --tcp-flags SYN,ACK,FIN,RST SYN
+</span></span><span class=line><span class=cl>                                        上面这条命令只匹配那些SYN标志被设置而ACK、FIN和RST标记没有被设置的包
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>!<span class=o>]</span> --syn                               只匹配那些设置了SYN位而清除了ACK和FIN位的TCP包。这些包用于TCP连接初始化时发出请求。例如，大量的这种包进入一个
+</span></span><span class=line><span class=cl>                                        接口发生堵塞时会阻止进入的TCP连接，而出去的TCP连接不会受到影响。这等于：--tcp-flags SYN,RST,ACK SYN
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--tcp-option <span class=o>[</span>!<span class=o>]</span> number                 匹配设置了TCP选项的数据包
+</span></span></code></pre></td></tr></table></div></div><h4 id=2-针对-udp-的扩展><strong>2. 针对 udp 的扩展</strong></h4><p>当<code>--protocol udp</code>被指定，且其他匹配的扩展未被指定时，这些扩展被装载。它提供以下选项：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>--source-port <span class=o>[</span>!<span class=o>]</span> <span class=o>[</span>port:<span class=o>[</span>port<span class=o>]]</span>         源端口或端口范围指定
+</span></span><span class=line><span class=cl>--destionation-port <span class=o>[</span>!<span class=o>]</span> <span class=o>[</span>port:<span class=o>[</span>port<span class=o>]]</span>   目标端口或端口范围指定
+</span></span></code></pre></td></tr></table></div></div><h4 id=3-针对-icmp-的扩展><strong>3. 针对 ICMP 的扩展</strong></h4><p>当<code>--protocol icmp</code>被指定，且其他匹配的扩展未被指定时，这些扩展被装载。它提供以下选项：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>--icmp-type <span class=o>[</span>!<span class=o>]</span> typename               这个选项允许指定ICMP类型，可以是一个数值型的ICMP类型，或者是某个由命令iptables -p icmp -h所显示的ICMP类型名
+</span></span></code></pre></td></tr></table></div></div><h4 id=4-针对-mac-的扩展><strong>4. 针对 mac 的扩展</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>--mac-source <span class=o>[</span>!<span class=o>]</span> address               匹配物理地址。注意它只对来自以太设备并进入PREROUTING、FORWORD和INPUT链的包有效。
+</span></span></code></pre></td></tr></table></div></div><h4 id=5-针对-limit-的扩展><strong>5. 针对 limit 的扩展</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>--limit rate             最大平均匹配速率：可赋的值有<span class=s1>&#39;/second&#39;</span>, <span class=s1>&#39;/minute&#39;</span>, <span class=s1>&#39;/hour&#39;</span>, or <span class=s1>&#39;/day&#39;</span>这样的单位，默认是3/hour
+</span></span><span class=line><span class=cl>--limit-burst number     待匹配包初始个数的最大值:若前面指定的极限还没达到这个数值,则概数字加1.默认值为5
+</span></span></code></pre></td></tr></table></div></div><h2 id=iptables-targets-介绍><strong>iptables targets 介绍</strong></h2><p>iptables的<code>-j</code>选项后面对应的是要执行的target。其中有些target具有一些扩展选项，下面我们会一并介绍：</p><h3 id=1-accept><strong>1. ACCEPT</strong></h3><p>表示接收匹配的数据包</p><h3 id=2-drop><strong>2. DROP</strong></h3><p>表示丢弃匹配的数据包</p><h3 id=3-reject><strong>3. REJECT</strong></h3><p>作为对匹配的包的响应，返回一个错误的包：其他情况下与DROP 相同</p><p>此目标只适用于INPUT、FORWORD和OUTPUT，和调用这些的用户自定义链。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>--reject-with <span class=nb>type</span>     type可以是icmp-net-unreachable、icmp-host-unreachable、icmp-port-nreachable、icmp-proto-unreachable、
+</span></span><span class=line><span class=cl>                       icmp-net-prohibited或者icmp-host-prohibited，该类型会返回相应的ICMP错误信息（默认是port-unreachable）
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--echo-reply           它只能用于指定ICMP ping包的规则中，生成ping的回应
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>--tcp-reset            可以用于在INPUT链中,或自INPUT链调用的规则，只匹配TCP协议：将回应一个TCP RST包。
+</span></span></code></pre></td></tr></table></div></div><h3 id=4-redirect><strong>4. REDIRECT</strong></h3><p>表示重定向匹配的数据包，只适用于nat表的PREROUTING和OUTPUT，和只调用它们的用户自定义链。它修改包的目标IP地址来发送包到机器自身（本地生成的包被安置为地址127.0.0.1）</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>--to-ports <span class=o>[</span>port-port<span class=o>]</span>        指定使用的目的端口或端口范围：不指定的话，目标端口不会被修改。只能用于指定了-p tcp 或 -p udp的规则。
+</span></span></code></pre></td></tr></table></div></div><h2 id=iptables常用命令><strong>iptables常用命令</strong></h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 新增规则# 指定 ip 访问指定端口</span>
+</span></span><span class=line><span class=cl>iptables -I INPUT -s &lt;ip&gt;  -p tcp -m tcp --dport &lt;port&gt; -j ACCEPT
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 允许所有ip访问指定端口</span>
+</span></span><span class=line><span class=cl>iptables -I INPUT  -p tcp -m tcp --dport &lt;port&gt; -j ACCEPT
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看所有规则</span>
+</span></span><span class=line><span class=cl>iptables -n -L
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看所有规则，带 序号</span>
+</span></span><span class=line><span class=cl>iptables -n -L --line-number
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 删除规则# 删除 INPUT 的 序号为 1 的规则</span>
+</span></span><span class=line><span class=cl>iptables -D INPUT <span class=m>1</span>
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/linux/>Linux</a>
+<a href=/tags/%E9%98%B2%E7%81%AB%E5%A2%99/>防火墙</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=document.querySelector(".main-article");renderMathInElement(e,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><footer class=site-footer><section class=copyright>&copy;
+2022 -
+2025 XiaoYp - Blog</section><section class=powerby>想都是问题，做才是答案！<br>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

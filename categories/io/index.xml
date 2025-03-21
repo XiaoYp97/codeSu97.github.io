@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>IO on XiaoYp - Blog</title><link>https://codeSu97.github.io/categories/io/</link><description>Recent content in IO on XiaoYp - Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>xyp_selune@163.com (Selune)</managingEditor><webMaster>xyp_selune@163.com (Selune)</webMaster><lastBuildDate>Fri, 31 May 2024 11:20:31 +0800</lastBuildDate><atom:link href="https://codeSu97.github.io/categories/io/index.xml" rel="self" type="application/rss+xml"/><item><title>I/O</title><link>https://codeSu97.github.io/p/io/</link><pubDate>Fri, 31 May 2024 11:20:31 +0800</pubDate><author>xyp_selune@163.com (Selune)</author><guid>https://codeSu97.github.io/p/io/</guid><description>&lt;h2 id="什么是io">什么是IO
+&lt;/h2>&lt;p>IO，英文全称是&lt;strong>Input/Output&lt;/strong>，&lt;strong>即输入/输出&lt;/strong>。&lt;/p>
+&lt;h3 id="计算机角度的io">计算机角度的IO
+&lt;/h3>&lt;p>我们常说的输入输出，比较直观的意思就是&lt;strong>计算机的输入输出&lt;/strong>，&lt;strong>计算机就是主体&lt;/strong>。&lt;/p>
+&lt;p>&lt;strong>冯.诺依曼结构&lt;/strong>，它将计算机分成分为5个部分：运算器、控制器、存储器、输入设备、输出设备。&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/io/%E5%86%AF-%E8%AF%BA%E4%BE%9D%E6%9B%BC%E7%BB%93%E6%9E%84.png"
+width="1784"
+height="932"
+srcset="https://codeSu97.github.io/p/io/%E5%86%AF-%E8%AF%BA%E4%BE%9D%E6%9B%BC%E7%BB%93%E6%9E%84_hu_604897a2b548d3fb.png 480w, https://codeSu97.github.io/p/io/%E5%86%AF-%E8%AF%BA%E4%BE%9D%E6%9B%BC%E7%BB%93%E6%9E%84_hu_b2a2d5a893c71c27.png 1024w"
+loading="lazy"
+alt="冯.诺依曼结构"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="459px"
+>&lt;/p>
+&lt;ul>
+&lt;li>输入设备是向计算机输入数据和信息的设备，键盘，鼠标都属于输入设备；&lt;/li>
+&lt;li>输出设备是计算机硬件系统的终端设备，用于接收计算机数据的输出显示，一般显示器、打印机属于输出设备。&lt;/li>
+&lt;/ul>
+&lt;p>鼠标、显示器这只是直观表面的输入输出，回到计算机架构来说，&lt;strong>涉及计算机核心与其他设备间数据迁移的过程，就是IO&lt;/strong>。&lt;/p>
+&lt;p>如磁盘IO，就是从磁盘读取数据到内存，这算一次输入，对应的，将内存中的数据写入磁盘，就算输出。这就是IO的本质。&lt;/p>
+&lt;h3 id="操作系统的io">操作系统的IO
+&lt;/h3>&lt;p>我们要将内存中的数据写入到磁盘的话，主体会是什么呢？主体可能是一个应用程序，比如一个Java进程（假设网络传来二进制流，一个Java进程可以把它写入到磁盘）。&lt;/p>
+&lt;p>&lt;strong>操作系统&lt;/strong>负责计算机的资源管理和进程的调度。我们电脑上跑着的应用程序，其实是需要经过&lt;strong>操作系统&lt;/strong>，才能做一些特殊操作，如&lt;strong>磁盘文件读写、内存的读写&lt;/strong>等等。因为这些都是比较危险的操作，不可以由应用程序乱来，只能交给底层操作系统来。也就是说，你的应用程序要把数据写入磁盘，只能通过调用操作系统开放出来的API来操作。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>什么是用户空间？什么是内核空间?&lt;/strong>&lt;/p>
+&lt;p>以32位操作系统为例，它为每一个进程都分配了4G(2的32次方)的内存空间。这4G可访问的内存空间分为二部分，一部分是用户空间，一部分是内核空间。内核空间是操作系统内核访问的区域，是受保护的内存空间，而用户空间是用户应用程序访问的内存区域。&lt;/p>&lt;/blockquote>
+&lt;p>我们应用程序是跑在用户空间的，它不存在实质的IO过程，真正的IO是在&lt;strong>操作系统&lt;/strong>执行的。即应用程序的IO操作分为两种动作：&lt;strong>IO调用和IO执行&lt;/strong>。IO调用是由进程（应用程序的运行态）发起，而IO执行是&lt;strong>操作系统内核&lt;/strong>的工作。此时所说的IO是应用程序对操作系统IO功能的一次触发，即IO调用。&lt;/p>
+&lt;h2 id="操作系统的一次io过程">操作系统的一次IO过程
+&lt;/h2>&lt;p>应用程序发起的一次IO操作包含两个阶段：&lt;/p>
+&lt;ul>
+&lt;li>IO调用：应用程序进程向操作系统&lt;strong>内核&lt;/strong>发起调用。&lt;/li>
+&lt;li>IO执行：操作系统内核完成IO操作。&lt;/li>
+&lt;/ul>
+&lt;p>操作系统内核完成IO操作还包括两个过程：&lt;/p>
+&lt;ul>
+&lt;li>准备数据：内核等待I/O设备准备好数据。&lt;/li>
+&lt;li>拷贝数据：将数据从内核缓冲区拷贝到用户进程缓冲区。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/io/IO%E8%BF%87%E7%A8%8B.png"
+width="2160"
+height="1106"
+srcset="https://codeSu97.github.io/p/io/IO%E8%BF%87%E7%A8%8B_hu_8deae71b6d751300.png 480w, https://codeSu97.github.io/p/io/IO%E8%BF%87%E7%A8%8B_hu_5e8163623202590d.png 1024w"
+loading="lazy"
+alt="IO过程"
+class="gallery-image"
+data-flex-grow="195"
+data-flex-basis="468px"
+>&lt;/p>
+&lt;p>其实IO就是把进程的内部数据转移到外部设备，或者把外部设备的数据迁移到进程内部。外部设备一般指硬盘、socket通讯的网卡。一个完整的&lt;strong>IO过程&lt;/strong>包括以下几个步骤：&lt;/p>
+&lt;ul>
+&lt;li>应用程序进程向操作系统发起&lt;strong>IO调用请求&lt;/strong>&lt;/li>
+&lt;li>操作系统&lt;strong>准备数据&lt;/strong>，把IO外部设备的数据，加载到&lt;strong>内核缓冲区&lt;/strong>&lt;/li>
+&lt;li>操作系统拷贝数据，即将内核缓冲区的数据，拷贝到用户进程缓冲区&lt;/li>
+&lt;/ul>
+&lt;h2 id="io模型">IO模型
+&lt;/h2>&lt;h3 id="阻塞io模型-bio-blocking-io">阻塞IO模型 (BIO, Blocking I/O)
+&lt;/h3>&lt;p>假设应用程序的进程发起&lt;strong>IO调用&lt;/strong>，但是如果&lt;strong>内核的数据还没准备好&lt;/strong>的话，那应用程序进程就一直在&lt;strong>阻塞等待&lt;/strong>，一直等到内核数据准备好了，从内核拷贝到用户空间，才返回成功提示，此次IO操作，称之为&lt;strong>阻塞IO&lt;/strong>。&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/io/%E9%98%BB%E5%A1%9EIO%E6%A8%A1%E5%9E%8B.png"
+width="2160"
+height="1130"
+srcset="https://codeSu97.github.io/p/io/%E9%98%BB%E5%A1%9EIO%E6%A8%A1%E5%9E%8B_hu_96fa08004de89fd9.png 480w, https://codeSu97.github.io/p/io/%E9%98%BB%E5%A1%9EIO%E6%A8%A1%E5%9E%8B_hu_e19611a2a189f803.png 1024w"
+loading="lazy"
+alt="阻塞IO模型"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="458px"
+>&lt;/p>
+&lt;ul>
+&lt;li>阻塞IO比较经典的应用就是&lt;strong>阻塞socket、Java BIO&lt;/strong>。&lt;/li>
+&lt;li>阻塞IO的缺点就是：如果内核数据一直没准备好，那用户进程将一直阻塞，&lt;strong>浪费性能&lt;/strong>，可以使用&lt;strong>非阻塞IO&lt;/strong>优化。&lt;/li>
+&lt;/ul>
+&lt;h3 id="非阻塞io模型-nio-non-blocking-io">非阻塞IO模型 (NIO, Non-Blocking I/O)
+&lt;/h3>&lt;p>如果内核数据还没准备好，可以先返回错误信息给用户进程，让它不需要等待，而是通过轮询的方式再来请求。这就是非阻塞IO，流程图如下：&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/io/%E9%9D%9E%E9%98%BB%E5%A1%9EIO.png"
+width="2160"
+height="1528"
+srcset="https://codeSu97.github.io/p/io/%E9%9D%9E%E9%98%BB%E5%A1%9EIO_hu_4c28639776292d8e.png 480w, https://codeSu97.github.io/p/io/%E9%9D%9E%E9%98%BB%E5%A1%9EIO_hu_53fadcaaef01d490.png 1024w"
+loading="lazy"
+alt="非阻塞IO"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="339px"
+>&lt;/p>
+&lt;p>非阻塞IO的流程如下：&lt;/p>
+&lt;ul>
+&lt;li>应用进程向操作系统内核，发起&lt;code>recvfrom&lt;/code>读取数据。&lt;/li>
+&lt;li>操作系统内核数据没有准备好，立即返回&lt;code>EWOULDBLOCK&lt;/code>错误码。&lt;/li>
+&lt;li>应用程序进程轮询调用，继续向操作系统内核发起&lt;code>recvfrom&lt;/code>读取数据。&lt;/li>
+&lt;li>操作系统内核数据准备好了，从内核缓冲区拷贝到用户空间。&lt;/li>
+&lt;li>完成调用，返回成功提示。&lt;/li>
+&lt;/ul>
+&lt;p>非阻塞IO模型，简称&lt;strong>NIO&lt;/strong>，&lt;code>Non-Blocking IO&lt;/code>。它相对于阻塞IO，虽然大幅提升了性能，但是它依然存在&lt;strong>性能问题&lt;/strong>，即&lt;strong>频繁的轮询&lt;/strong>，导致频繁的系统调用，同样会消耗大量的CPU资源。可以考虑&lt;strong>IO复用模型&lt;/strong>，去解决这个问题。&lt;/p>
+&lt;h3 id="多路复用io模型-mio-multiplexing-io">多路复用IO模型 (MIO, Multiplexing I/O)
+&lt;/h3>&lt;p>既然&lt;strong>NIO&lt;/strong>无效的轮询会导致CPU资源消耗，我们等到内核数据准备好了，主动通知应用进程再去进行系统调用，那不就好了嘛？&lt;/p>
+&lt;p>在这之前，我们先来复习下，什么是&lt;a class="link" href="1.%e5%ad%a6%e4%b9%a0/Linux/%e6%96%87%e4%bb%b6%e6%8f%8f%e8%bf%b0%e7%ac%a6.md" >&lt;strong>文件描述符fd&lt;/strong>(File Descriptor)&lt;/a>,它是计算机科学中的一个术语，形式上是一个非负整数。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。&lt;/p>
+&lt;p>IO复用模型核心思路：系统给我们提供&lt;strong>一类函数&lt;/strong>（如我们耳濡目染的&lt;strong>select、poll、epoll&lt;/strong>函数），它们可以同时监控多个&lt;code>fd&lt;/code>的操作，任何一个返回内核数据就绪，应用进程再发起&lt;code>recvfrom&lt;/code>系统调用。&lt;/p>
+&lt;h4 id="select">select
+&lt;/h4>&lt;p>应用进程通过调用&lt;strong>select&lt;/strong>函数，可以同时监控多个&lt;code>fd&lt;/code>，在&lt;code>select&lt;/code>函数监控的&lt;code>fd&lt;/code>中，只要有任何一个数据状态准备就绪了，&lt;code>select&lt;/code>函数就会返回可读状态，这时应用进程再发起&lt;code>recvfrom&lt;/code>请求去读取数据。&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/io/select.png"
+width="2160"
+height="1320"
+srcset="https://codeSu97.github.io/p/io/select_hu_7d14980e6febe213.png 480w, https://codeSu97.github.io/p/io/select_hu_bd2e0c412fc285a6.png 1024w"
+loading="lazy"
+alt="select"
+class="gallery-image"
+data-flex-grow="163"
+data-flex-basis="392px"
+>&lt;/p>
+&lt;p>非阻塞IO模型（NIO）中，需要&lt;code>N&lt;/code>（N&amp;gt;=1）次轮询系统调用，然而借助&lt;code>select&lt;/code>的IO多路复用模型，只需要发起一次询问就够了,大大优化了性能。&lt;/p>
+&lt;p>但是呢，&lt;code>select&lt;/code>有几个缺点：&lt;/p>
+&lt;ul>
+&lt;li>监听的IO最大连接数有限，在Linux系统上一般为1024。&lt;/li>
+&lt;li>select函数返回后，是通过&lt;strong>遍历&lt;/strong>&lt;code>fdset&lt;/code>，找到就绪的描述符&lt;code>fd&lt;/code>。（仅知道有I/O事件发生，却不知是哪几个流，所以&lt;strong>遍历所有流&lt;/strong>）&lt;/li>
+&lt;/ul>
+&lt;p>因为&lt;strong>存在连接数限制&lt;/strong>，所以后来又提出了&lt;strong>poll&lt;/strong>。与select相比，&lt;strong>poll&lt;/strong>解决了&lt;strong>连接数限制问题&lt;/strong>。但是呢，select和poll一样，还是需要通过遍历文件描述符来获取已经就绪的&lt;code>socket&lt;/code>。如果同时连接的大量客户端，在一时刻可能只有极少处于就绪状态，伴随着监视的描述符数量的增长，&lt;strong>效率也会线性下降&lt;/strong>。&lt;/p>
+&lt;p>因此经典的多路复用模型&lt;code>epoll&lt;/code>诞生。&lt;/p>
+&lt;h4 id="epoll">epoll
+&lt;/h4>&lt;p>为了解决&lt;code>select/poll&lt;/code>存在的问题，多路复用模型&lt;code>epoll&lt;/code>诞生，它采用事件驱动来实现，流程图如下：&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/io/epoll.png"
+width="2160"
+height="1312"
+srcset="https://codeSu97.github.io/p/io/epoll_hu_26385753c109246.png 480w, https://codeSu97.github.io/p/io/epoll_hu_3fd15b2fd037a372.png 1024w"
+loading="lazy"
+alt="epoll"
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="395px"
+>&lt;/p>
+&lt;p>&lt;strong>epoll&lt;/strong>先通过&lt;code>epoll_ctl()&lt;/code>来注册一个&lt;code>fd&lt;/code>（文件描述符），一旦基于某个&lt;code>fd&lt;/code>就绪时，内核会采用回调机制，迅速激活这个&lt;code>fd&lt;/code>，当进程调用&lt;code>epoll_wait()&lt;/code>时便得到通知。这里去掉了&lt;strong>遍历文件描述符&lt;/strong>的坑爹操作，而是采用&lt;strong>监听事件回调&lt;/strong>的机制。这就是epoll的亮点。&lt;/p>
+&lt;h4 id="selectpollepoll的区别">select、poll、epoll的区别
+&lt;/h4>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;/th>
+&lt;th>select&lt;/th>
+&lt;th>poll&lt;/th>
+&lt;th>epoll&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>底层数据结构&lt;/td>
+&lt;td>数组&lt;/td>
+&lt;td>链表&lt;/td>
+&lt;td>红黑树和双链表&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>获取就绪的fd&lt;/td>
+&lt;td>遍历&lt;/td>
+&lt;td>遍历&lt;/td>
+&lt;td>事件回调&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>事件复杂度&lt;/td>
+&lt;td>O(n)&lt;/td>
+&lt;td>O(n)&lt;/td>
+&lt;td>O(1)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>最大连接数&lt;/td>
+&lt;td>1024&lt;/td>
+&lt;td>无限制&lt;/td>
+&lt;td>无限制&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>fd数据拷贝&lt;/td>
+&lt;td>每次调用select，需要将fd数据从用户空间拷贝到内核空间&lt;/td>
+&lt;td>每次调用poll，需要将fd数据从用户空间拷贝到内核空间&lt;/td>
+&lt;td>使用内存映射(mmap)，不需要从用户空间频繁拷贝fd数据到内核空间&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>epoll&lt;/strong>明显优化了IO的执行效率，但在进程调用&lt;code>epoll_wait()&lt;/code>时，仍然可能被阻塞。&lt;/p>
+&lt;h3 id="信号驱动io模型-sdio-signal-driven-io">信号驱动IO模型 (SDIO, Signal-driven I/O)
+&lt;/h3>&lt;p>信号驱动IO不再用主动询问的方式去确认数据是否就绪，而是向内核发送一个信号（调用&lt;code>sigaction&lt;/code>的时候建立一个&lt;code>SIGIO&lt;/code>的信号），然后应用用户进程可以去做别的事，不用阻塞。当内核数据准备好后，再通过&lt;code>SIGIO&lt;/code>信号通知应用进程，数据准备好后的可读状态。应用用户进程收到信号之后，立即调用&lt;code>recvfrom&lt;/code>，去读取数据。&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/io/%E4%BF%A1%E5%8F%B7%E9%A9%B1%E5%8A%A8IO%E6%A8%A1%E5%9E%8B.png"
+width="2160"
+height="1324"
+srcset="https://codeSu97.github.io/p/io/%E4%BF%A1%E5%8F%B7%E9%A9%B1%E5%8A%A8IO%E6%A8%A1%E5%9E%8B_hu_a20f69c0ec854949.png 480w, https://codeSu97.github.io/p/io/%E4%BF%A1%E5%8F%B7%E9%A9%B1%E5%8A%A8IO%E6%A8%A1%E5%9E%8B_hu_fb0f40ed63b73bfa.png 1024w"
+loading="lazy"
+alt="信号驱动IO模型"
+class="gallery-image"
+data-flex-grow="163"
+data-flex-basis="391px"
+>&lt;/p>
+&lt;p>信号驱动IO模型，在应用进程发出信号后，是立即返回的，不会阻塞进程。它已经有异步操作的感觉了。但是你细看上面的流程图，&lt;strong>发现数据复制到应用缓冲的时候&lt;/strong>，应用进程还是阻塞的。回过头来看下，不管是BIO，还是NIO，还是信号驱动，在数据从内核复制到应用缓冲的时候，都是阻塞的。&lt;/p>
+&lt;h3 id="异步io模型-aio-asynchronous-io">异步IO模型 (AIO, Asynchronous I/O)
+&lt;/h3>&lt;p>前面讲的&lt;code>BIO，NIO和SDIO&lt;/code>，在数据从内核复制到应用缓冲的时候，都是&lt;strong>阻塞&lt;/strong>的，因此都不算是真正的异步。&lt;code>AIO&lt;/code>实现了IO全流程的非阻塞，就是应用进程发出系统调用后，是立即返回的，但是&lt;strong>立即返回的不是处理结果，而是表示提交成功类似的意思&lt;/strong>。等内核数据准备好，将数据拷贝到用户进程缓冲区，发送信号通知用户进程IO操作执行完毕。&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/io/%E5%BC%82%E6%AD%A5IO%E6%A8%A1%E5%9E%8B.png"
+width="2160"
+height="1352"
+srcset="https://codeSu97.github.io/p/io/%E5%BC%82%E6%AD%A5IO%E6%A8%A1%E5%9E%8B_hu_7c09de5e6fbebc58.png 480w, https://codeSu97.github.io/p/io/%E5%BC%82%E6%AD%A5IO%E6%A8%A1%E5%9E%8B_hu_bb84c71d731079d4.png 1024w"
+loading="lazy"
+alt="异步IO模型"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="383px"
+>&lt;/p>
+&lt;p>异步IO的优化思路很简单，只需要向内核发送一次请求，就可以完成数据状态询问和数据拷贝的所有操作，并且不用阻塞等待结果。日常开发中，有类似思想的业务场景：&lt;/p>
+&lt;blockquote>
+&lt;p>比如发起一笔批量转账，但是批量转账处理比较耗时，这时候后端可以先告知前端转账提交成功，等到结果处理完，再通知前端结果即可。&lt;/p>&lt;/blockquote>
+&lt;h2 id="阻塞非阻塞同步异步io划分">阻塞、非阻塞、同步、异步IO划分
+&lt;/h2>&lt;p>&lt;img src="https://codeSu97.github.io/p/io/IO%E5%88%92%E5%88%86.png"
+width="1620"
+height="806"
+srcset="https://codeSu97.github.io/p/io/IO%E5%88%92%E5%88%86_hu_d2f7e3bd2fc99e22.png 480w, https://codeSu97.github.io/p/io/IO%E5%88%92%E5%88%86_hu_fb7719876e9e7aa6.png 1024w"
+loading="lazy"
+alt="IO划分"
+class="gallery-image"
+data-flex-grow="200"
+data-flex-basis="482px"
+>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>IO模型&lt;/th>
+&lt;th>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>BIO&lt;/td>
+&lt;td>同步阻塞&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>NIO&lt;/td>
+&lt;td>同步非阻塞&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>MIO&lt;/td>
+&lt;td>同步阻塞&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>SDIO&lt;/td>
+&lt;td>同步非阻塞&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AIO&lt;/td>
+&lt;td>异步非阻塞&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item></channel></rss>

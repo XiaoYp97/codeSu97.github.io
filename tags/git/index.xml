@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Git on XiaoYp - Blog</title><link>https://codeSu97.github.io/tags/git/</link><description>Recent content in Git on XiaoYp - Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>xyp_selune@163.com (Selune)</managingEditor><webMaster>xyp_selune@163.com (Selune)</webMaster><lastBuildDate>Thu, 12 Jan 2023 15:41:12 +0800</lastBuildDate><atom:link href="https://codeSu97.github.io/tags/git/index.xml" rel="self" type="application/rss+xml"/><item><title>Git Lfs</title><link>https://codeSu97.github.io/p/gitlfs/</link><pubDate>Thu, 12 Jan 2023 15:41:12 +0800</pubDate><author>xyp_selune@163.com (Selune)</author><guid>https://codeSu97.github.io/p/gitlfs/</guid><description>&lt;p>在GitHub或者GitLab提交超过50M的大文件的时候，无法上传
+&lt;img src="https://codeSu97.github.io/p/gitlfs/git-maximum-file-size.png"
+width="1067"
+height="84"
+srcset="https://codeSu97.github.io/p/gitlfs/git-maximum-file-size_hu_f9e5a5fac8900ea7.png 480w, https://codeSu97.github.io/p/gitlfs/git-maximum-file-size_hu_e1654590ee041f20.png 1024w"
+loading="lazy"
+alt="git-maximum-file-size"
+class="gallery-image"
+data-flex-grow="1270"
+data-flex-basis="3048px"
+>&lt;/p>
+&lt;h2 id="什么是git-lfs">什么是Git LFS
+&lt;/h2>&lt;blockquote>
+&lt;p>Git 是分布式版本控制系统，这意味着在克隆过程中会将仓库的整个历史记录传输到客户端。&lt;br>
+对于包涵大文件（尤其是经常被修改的大文件）的项目，初始克隆需要大量时间，因为客户端会下载每个文件的每个版本。&lt;br>
+Git LFS（Large File Storage）是由 Atlassian, GitHub 以及其他开源贡献者开发的 Git 扩展，它通过延迟地（lazily）下载大文件的相关版本来减少大文件在仓库中的影响，具体来说，大文件是在 checkout 的过程中下载的，而不是 clone 或 fetch 过程中下载的（这意味着你在后台定时 fetch 远端仓库内容到本地时，并不会下载大文件内容，而是在你 checkout 到工作区的时候才会真正去下载大文件的内容）。&lt;/p>&lt;/blockquote>
+&lt;!-- ![git-lfs](git-lfs.gif) -->
+&lt;h2 id="参考文献">参考文献
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://www.atlassian.com/git/tutorials/git-lfs" target="_blank" rel="noopener"
+>Atlassian官方LFS文章&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>

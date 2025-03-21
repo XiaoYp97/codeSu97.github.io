@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>随记 on XiaoYp - Blog</title><link>https://codeSu97.github.io/categories/%E9%9A%8F%E8%AE%B0/</link><description>Recent content in 随记 on XiaoYp - Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>xyp_selune@163.com (Selune)</managingEditor><webMaster>xyp_selune@163.com (Selune)</webMaster><lastBuildDate>Sun, 23 Oct 2022 15:14:25 +0800</lastBuildDate><atom:link href="https://codeSu97.github.io/categories/%E9%9A%8F%E8%AE%B0/index.xml" rel="self" type="application/rss+xml"/><item><title>访问网站缺少样式</title><link>https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/</link><pubDate>Sun, 23 Oct 2022 15:14:25 +0800</pubDate><author>xyp_selune@163.com (Selune)</author><guid>https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/</guid><description>&lt;h2 id="现状">现状
+&lt;/h2>&lt;p>某些网站打开，因为当前网络等其他原因，无法正常访问页面，只能显示网站的基本文字，而没有图片，样式等&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/stackoverflow.png"
+width="1872"
+height="1009"
+srcset="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/stackoverflow_hu_c2a8e32698bf36e.png 480w, https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/stackoverflow_hu_baee5d9fd8301d8a.png 1024w"
+loading="lazy"
+alt="stackoverflow无法显示样式"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+>&lt;/p>
+&lt;h2 id="产生原因">产生原因
+&lt;/h2>&lt;p>当前网站的样式地址、静态文件地址，无法访问，或者不安全被浏览器拦截&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/unsafe_link.png"
+width="836"
+height="578"
+srcset="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/unsafe_link_hu_a49e9a68e70d05c4.png 480w, https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/unsafe_link_hu_c6c14e1e13d3f64e.png 1024w"
+loading="lazy"
+alt="您的链接不是私密链接"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="347px"
+>&lt;/p>
+&lt;h2 id="解决办法">解决办法
+&lt;/h2>&lt;ol>
+&lt;li>打开无法正常访问的网站&lt;/li>
+&lt;li>F12，打开审查，切换到 &lt;code>Network&lt;/code> tab页，刷新页面，会发现很多地址都是显示红色
+&lt;img src="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/not_access.png"
+width="1167"
+height="722"
+srcset="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/not_access_hu_72b813cf8e6a741c.png 480w, https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/not_access_hu_28976e8a69818606.png 1024w"
+loading="lazy"
+alt="F12"
+class="gallery-image"
+data-flex-grow="161"
+data-flex-basis="387px"
+>&lt;/li>
+&lt;li>选择任意一个红色的无法访问的地址，双击打开，会发现浏览器出现隐私错误提示
+&lt;img src="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/unsafe_link.png"
+width="836"
+height="578"
+srcset="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/unsafe_link_hu_a49e9a68e70d05c4.png 480w, https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/unsafe_link_hu_c6c14e1e13d3f64e.png 1024w"
+loading="lazy"
+alt="您的链接不是私密链接"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="347px"
+>&lt;/li>
+&lt;li>高级，仍然访问，(或者直接在当前页面上键盘输入 &lt;code>thisisunsafe&lt;/code>)&lt;/li>
+&lt;li>当前页面会刷新重新访问，并正常访问&lt;/li>
+&lt;li>这时，继续切换到 该网站 的标签页，刷新，会发现当前页面可以正常访问了
+&lt;img src="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/success.png"
+width="1915"
+height="1007"
+srcset="https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/success_hu_8642798c149c8012.png 480w, https://codeSu97.github.io/p/%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99%E7%BC%BA%E5%B0%91%E6%A0%B7%E5%BC%8F/success_hu_30fedbb631d12831.png 1024w"
+loading="lazy"
+alt="正常访问"
+class="gallery-image"
+data-flex-grow="190"
+data-flex-basis="456px"
+>&lt;/li>
+&lt;/ol>
+&lt;h2 id="猜测">猜测
+&lt;/h2>&lt;p>猜测该类网站无法访问，是因为Chrome不信任这些静态资源地址&lt;code>自签名ssl证书&lt;/code>，为了安全起见，直接禁止访问了&lt;/p></description></item></channel></rss>

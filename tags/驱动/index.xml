@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>驱动 on XiaoYp - Blog</title><link>https://codeSu97.github.io/tags/%E9%A9%B1%E5%8A%A8/</link><description>Recent content in 驱动 on XiaoYp - Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>xyp_selune@163.com (Selune)</managingEditor><webMaster>xyp_selune@163.com (Selune)</webMaster><lastBuildDate>Mon, 12 Aug 2024 12:57:17 +0800</lastBuildDate><atom:link href="https://codeSu97.github.io/tags/%E9%A9%B1%E5%8A%A8/index.xml" rel="self" type="application/rss+xml"/><item><title>ODBC</title><link>https://codeSu97.github.io/p/odbc/</link><pubDate>Mon, 12 Aug 2024 12:57:17 +0800</pubDate><author>xyp_selune@163.com (Selune)</author><guid>https://codeSu97.github.io/p/odbc/</guid><description>&lt;ul>
+&lt;li>&lt;strong>ODBC, Open Database Connectivity&lt;/strong> 是由 Microsoft 开发的数据库连接标准。&lt;/li>
+&lt;li>它允许应用程序使用标准化的接口访问不同的数据库系统。&lt;/li>
+&lt;/ul>
+&lt;h2 id="特点">特点
+&lt;/h2>&lt;ul>
+&lt;li>&lt;strong>跨语言支持&lt;/strong>：
+&lt;ul>
+&lt;li>ODBC 不是绑定于某种编程语言的，因此可以用于多种编程语言，包括 C、C++、Python 等。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>平台依赖性&lt;/strong>：
+&lt;ul>
+&lt;li>ODBC 原本是为 Windows 平台设计的，但也有跨平台版本，如 unixODBC 用于 Linux 系统。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>使用方式&lt;/strong>：
+&lt;ul>
+&lt;li>ODBC 通过 ODBC 驱动与数据库通信。驱动程序通常由数据库供应商提供，或者可以使用第三方驱动。&lt;/li>
+&lt;li>ODBC 需要在系统中配置数据源名称（DSN），通过 DSN 来标识和连接数据库。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="使用">使用
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.easysoft.com/developer/interfaces/odbc/linux.html#getting_unixodbc" target="_blank" rel="noopener"
+>参考地址&lt;/a>&lt;/p>
+&lt;h3 id="安装驱动">安装驱动
+&lt;/h3>&lt;ul>
+&lt;li>Ubuntu/Debian
+&lt;ul>
+&lt;li>&lt;code>sudo apt-get install unixodbc unixodbc-dev odbcinst&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>CentOS/RHEL
+&lt;ul>
+&lt;li>&lt;code>sudo yum install unixODBC unixODBC-devel&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Windows
+在 Windows 上，你可以通过安装 ODBC 数据源管理器和相应的数据库驱动来支持 ODBC。&lt;/li>
+&lt;/ul>
+&lt;h3 id="配置数据源">配置数据源
+&lt;/h3>&lt;p>Linux下，odbc依赖两个配置文件（以达梦8为例）&lt;/p>
+&lt;h4 id="配置驱动-etcodbcinstini">配置驱动, /etc/odbcinst.ini
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="k">[DM8]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Description&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">ODBC DRIVER FOR Dameng8&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Driver&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">/data0/dm_db/dmdbms/drivers/odbc/libdodbc.so&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>两个属性，&lt;/p>
+&lt;ul>
+&lt;li>Description，驱动说明&lt;/li>
+&lt;li>Driver，驱动文件&lt;/li>
+&lt;/ul>
+&lt;h4 id="配置数据源-etcodbcini">配置数据源, /etc/odbc.ini
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="k">[DM8]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Description&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">DM ODBC DSN&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Driver&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">DM8&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">SERVER&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">localhost&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">UID&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">SYSDBA&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">PWD&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">SYSDBA&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">TCP_PORT&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">5236&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">LANGUAGE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">CHINESE&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>Description，数据源说明&lt;/li>
+&lt;li>Driver，驱动，要和 odbcinst.ini 中的 &lt;strong>selection&lt;/strong> 保持一致&lt;/li>
+&lt;li>SERVER，连接的ip&lt;/li>
+&lt;li>UID，账户名称&lt;/li>
+&lt;li>PWD，账户密码&lt;/li>
+&lt;li>TCP_PORT，连接端口&lt;/li>
+&lt;li>LANGUAGE，环境语言&lt;/li>
+&lt;/ul>
+&lt;h2 id="测试">测试
+&lt;/h2>&lt;p>&lt;code>isql &amp;lt;DSN数据源名称&amp;gt; [UID [PWD]]&lt;/code>&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/odbc/isql.png"
+width="804"
+height="354"
+srcset="https://codeSu97.github.io/p/odbc/isql_hu_b5d6120f34669dd3.png 480w, https://codeSu97.github.io/p/odbc/isql_hu_776897a581b61958.png 1024w"
+loading="lazy"
+alt="isql"
+class="gallery-image"
+data-flex-grow="227"
+data-flex-basis="545px"
+>&lt;/p></description></item></channel></rss>

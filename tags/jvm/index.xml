@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>JVM on XiaoYp - Blog</title><link>https://codeSu97.github.io/tags/jvm/</link><description>Recent content in JVM on XiaoYp - Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>xyp_selune@163.com (Selune)</managingEditor><webMaster>xyp_selune@163.com (Selune)</webMaster><lastBuildDate>Sat, 20 Jan 2024 15:35:28 +0800</lastBuildDate><atom:link href="https://codeSu97.github.io/tags/jvm/index.xml" rel="self" type="application/rss+xml"/><item><title>如何理解Java的 “一次编写，到处运行”</title><link>https://codeSu97.github.io/p/write-once-run-anywhere/</link><pubDate>Sat, 20 Jan 2024 15:35:28 +0800</pubDate><author>xyp_selune@163.com (Selune)</author><guid>https://codeSu97.github.io/p/write-once-run-anywhere/</guid><description>&lt;h2 id="write-once-run-anywhere">Write once, run anywhere
+&lt;/h2>&lt;p>&lt;code>“一次编写，到处运行”&lt;/code>说的是Java语言跨平台的特性，Java的跨平台特性与Java虚拟机的存在密不可分，可在不同的环境中运行。比如说Windows平台和Linux平台都有相应的JDK，安装好JDK后也就有了Java语言的运行环境。其实Java语言本身与其他的编程语言没有特别大的差异，并不是说Java语言可以跨平台，而是在不同的平台都有可以让Java语言运行的环境而已，所以才有了Java一次编写，到处运行这样的效果。&lt;/p>
+&lt;p>严格的讲，跨平台的语言不止Java一种，但Java是较为成熟的一种。&lt;code>“一次编写，到处运行”&lt;/code>这种效果跟编译器有关。编程语言的处理需要编译器和解释器。Java虚拟机和DOS类似，相当于一个供程序运行的平台。&lt;/p>
+&lt;p>程序从源代码到运行的三个阶段：编码——编译——运行——调试。Java在编译阶段则体现了跨平台的特点。编译过程大概是这样的：首先是将Java源代码转化成&lt;code>.CLASS&lt;/code>文件字节码，这是第一次编译。 &lt;code>.class&lt;/code> 文件就是可以到处运行的文件。然后Java字节码会被转化为目标机器代码，这是是由JVM来执行的，即Java的第二次编译。&lt;/p>
+&lt;p>“到处运行”的关键和前提就是JVM。因为在第二次编译中JVM起着关键作用。在可以运行Java虚拟机的地方都内含着一个JVM操作系统。从而使JAVA提供了各种不同平台上的虚拟机制，因此实现了“到处运行”的效果。需要强调的一点是，java并不是编译机制，而是解释机制。Java字节码的设计充分考虑了JIT这一即时编译方式，可以将字节码直接转化成高性能的本地机器码，这同样是虚拟机的一个构成部分。&lt;/p>
+&lt;h2 id="java-是解释运行吗">Java 是解释运行吗？
+&lt;/h2>&lt;p>&lt;em>&lt;strong>答案是 不是&lt;/strong>&lt;/em>&lt;/p>
+&lt;h3 id="java-是如何编译的">Java 是如何编译的？
+&lt;/h3>&lt;ol>
+&lt;li>编译阶段：
+&lt;ol>
+&lt;li>Java源代码（&lt;code>.java&lt;/code>）通过&lt;code>javac编译器&lt;/code> &lt;strong>提前编译&lt;/strong> 为平台无关的字节码（&lt;code>.class&lt;/code>）&lt;/li>
+&lt;li>这一步是传统的AOT（Ahead-Of-Time, 预先编译，编译在程序运行前完成）编译，生成中间代码而非机器码&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>运行时阶段：
+&lt;ol>
+&lt;li>&lt;strong>解释执行：&lt;/strong> JVM（如HotSpot）首先逐行解释执行字节码（&lt;code>.class&lt;/code>）。&lt;/li>
+&lt;li>&lt;strong>JIT编译：&lt;/strong> （Just in time，即时编译）对于频繁执行的代码（热点代码，方法级代码），JVM触发JIT编译器（如C1/C2）将其编译为本地机器码，大幅提升性能，属于运行时动态优化。&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;/ol></description></item></channel></rss>

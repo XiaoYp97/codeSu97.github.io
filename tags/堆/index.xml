@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>堆 on XiaoYp - Blog</title><link>https://codeSu97.github.io/tags/%E5%A0%86/</link><description>Recent content in 堆 on XiaoYp - Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>xyp_selune@163.com (Selune)</managingEditor><webMaster>xyp_selune@163.com (Selune)</webMaster><lastBuildDate>Mon, 09 Dec 2024 16:19:57 +0800</lastBuildDate><atom:link href="https://codeSu97.github.io/tags/%E5%A0%86/index.xml" rel="self" type="application/rss+xml"/><item><title>堆与栈</title><link>https://codeSu97.github.io/p/heap-and-stack/</link><pubDate>Mon, 09 Dec 2024 16:19:57 +0800</pubDate><author>xyp_selune@163.com (Selune)</author><guid>https://codeSu97.github.io/p/heap-and-stack/</guid><description>&lt;p>栈和堆都是代码在运行时可供使用的内存，但是它们的结构不同。&lt;/p>
+&lt;h2 id="栈stack">栈，Stack
+&lt;/h2>&lt;p>栈以放入值的顺序存储值并以相反顺序取出值。这也被称作 &lt;strong>后进先出&lt;/strong>（&lt;em>last in, first out&lt;/em>）。&lt;/p>
+&lt;blockquote>
+&lt;p>想象一下一叠盘子：当增加更多盘子时，把它们放在盘子堆的顶部，当需要盘子时，也从顶部拿走。&lt;/p>
+&lt;p>&lt;strong>不能从中间也不能从底部增加或拿走盘子！&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;p>增加数据叫做 &lt;strong>进栈&lt;/strong>（&lt;em>pushing onto the stack&lt;/em>），而移出数据叫做 &lt;strong>出栈&lt;/strong>（&lt;em>popping off the stack&lt;/em>）。&lt;/p>
+&lt;p>栈中的所有数据都必须占用已知且固定的大小。&lt;/p>
+&lt;p>&lt;em>&lt;strong>在编译时大小未知或大小可能变化的数据，要改为存储在堆上。&lt;/strong>&lt;/em>&lt;/p>
+&lt;h2 id="堆heap">堆，Heap
+&lt;/h2>&lt;p>堆是缺乏组织的：当向堆放入数据时，你要请求一定大小的空间。&lt;/p>
+&lt;p>内存分配器（memory allocator）在堆的某处找到一块足够大的空位，把它标记为已使用，并返回一个表示该位置地址的 &lt;strong>指针&lt;/strong>（&lt;em>pointer&lt;/em>）。
+这个过程称作 &lt;strong>在堆上分配内存&lt;/strong>（&lt;em>allocating on the heap&lt;/em>），有时简称为 “分配”（allocating）。（将数据推入栈中并不被认为是分配）。&lt;/p>
+&lt;p>因为指向放入堆中数据的指针是已知的并且大小是固定的，你可以将该指针存储在栈上，不过当需要实际数据时，必须访问指针。&lt;/p>
+&lt;blockquote>
+&lt;p>想象一下去餐馆就座吃饭。当进入时，你说明有几个人，餐馆员工会找到一个够大的空桌子并领你们过去。
+如果有人来迟了，他们也可以通过询问来找到你们坐在哪。&lt;/p>&lt;/blockquote>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/heap-and-stack/%E5%A0%86%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98.png"
+width="869"
+height="489"
+srcset="https://codeSu97.github.io/p/heap-and-stack/%E5%A0%86%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98_hu_d3f078da91f14f2c.png 480w, https://codeSu97.github.io/p/heap-and-stack/%E5%A0%86%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98_hu_fbb293b7abfb0dbc.png 1024w"
+loading="lazy"
+alt="堆内存管理常见问题"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;h2 id="比较">比较
+&lt;/h2>&lt;p>入栈比在堆上分配内存要快，因为（入栈时）分配器无需为存储新数据去搜索内存空间；其位置总是在栈顶。
+相比之下，在堆上分配内存则需要更多的工作，这是因为分配器必须首先找到一块足够存放数据的内存空间，并接着做一些记录为下一次分配做准备。&lt;/p>
+&lt;p>访问堆上的数据比访问栈上的数据慢，因为必须通过指针来访问。现代处理器在内存中跳转越少就越快（缓存）。&lt;/p>
+&lt;blockquote>
+&lt;p>继续类比，假设有一个服务员在餐厅里处理多个桌子的点菜。
+在一个桌子报完所有菜后再移动到下一个桌子是最有效率的。
+从桌子 A 听一个菜，接着桌子 B 听一个菜，然后再桌子 A，然后再桌子 B 这样的流程会更加缓慢。
+出于同样原因，处理器在处理的数据彼此较近的时候（比如在栈上）比较远的时候（比如可能在堆上）能更好的工作。&lt;/p>&lt;/blockquote>
+&lt;p>当你的代码调用一个函数时，传递给函数的值（包括可能指向堆上数据的指针）和函数的局部变量被压入栈中。当函数结束时，这些值被移出栈。&lt;/p>
+&lt;p>&lt;img src="https://codeSu97.github.io/p/heap-and-stack/%E5%A0%86%E4%B8%8E%E6%A0%88%E6%AF%94%E8%BE%83.png"
+width="869"
+height="489"
+srcset="https://codeSu97.github.io/p/heap-and-stack/%E5%A0%86%E4%B8%8E%E6%A0%88%E6%AF%94%E8%BE%83_hu_932e44b5127ea0a5.png 480w, https://codeSu97.github.io/p/heap-and-stack/%E5%A0%86%E4%B8%8E%E6%A0%88%E6%AF%94%E8%BE%83_hu_89082f8e6472426f.png 1024w"
+loading="lazy"
+alt="堆与栈比较"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p></description></item></channel></rss>

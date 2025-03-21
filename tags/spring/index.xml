@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Spring on XiaoYp - Blog</title><link>https://codeSu97.github.io/tags/spring/</link><description>Recent content in Spring on XiaoYp - Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>xyp_selune@163.com (Selune)</managingEditor><webMaster>xyp_selune@163.com (Selune)</webMaster><lastBuildDate>Sun, 17 Mar 2024 14:44:31 +0800</lastBuildDate><atom:link href="https://codeSu97.github.io/tags/spring/index.xml" rel="self" type="application/rss+xml"/><item><title>Spring学习笔记02 - Spring IoC</title><link>https://codeSu97.github.io/p/spring-learning-02/</link><pubDate>Sun, 17 Mar 2024 14:44:31 +0800</pubDate><author>xyp_selune@163.com (Selune)</author><guid>https://codeSu97.github.io/p/spring-learning-02/</guid><description>&lt;h2 id="什么是-spring-ioc">什么是 Spring IoC?
+&lt;/h2>&lt;p>Spring IoC（Inversion of Control，控制反转）是 Spring 框架的核心机制，其核心思想是将对象的创建、依赖管理和生命周期交给容器统一控制，而非由开发者手动通过 new 创建对象。&lt;/p>
+&lt;p>通过 IoC，代码的耦合度降低，程序的灵活性和可维护性显著提高。&lt;/p>
+&lt;p>&lt;em>例如，如果一个用户服务需要数据库连接，容器会确保数据库连接被正确注入，而无需手动创建。&lt;/em>&lt;/p>
+&lt;ul>
+&lt;li>负责管理对象的生命周期和依赖关系。&lt;/li>
+&lt;li>它通过依赖注入（Dependency Injection, DI）来实例化、配置和组装被称为“bean”的对象。&lt;/li>
+&lt;li>配置元数据可以是 XML、Java 注解或 Java 代码，增强了系统的模块化和灵活性.&lt;/li>
+&lt;/ul>
+&lt;h2 id="依赖查找">依赖查找
+&lt;/h2>&lt;h3 id="价值">价值
+&lt;/h3>&lt;ul>
+&lt;li>灵活应对运行时需求：有些依赖需要根据实时条件获取，比如按不同场景或配置，动态选择不同实现，这时直接注入一个固定 bean 可能不够灵活，需要主动查找。&lt;/li>
+&lt;li>工具或框架类的特殊需求：一些工具类或公共组件并不便于被注入到特定对象中，反而使用依赖查找更符合设计。比如在某些自定义 Starter 或底层框架中，可能会在初始化流程中需要访问容器本身。&lt;/li>
+&lt;li>在特定场景临时获取 bean：有时你需要延迟获取某些依赖，或想在调用时才加载/初始化（如懒加载），这时依赖查找也比提前注入更合适。&lt;/li>
+&lt;/ul>
+&lt;h3 id="实现">实现
+&lt;/h3>&lt;h4 id="通过beanfactory基础接口">通过 &lt;code>BeanFactory&lt;/code> 基础接口
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 1. 创建容器&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">BeanFactory&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">factory&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">new&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">XmlBeanFactory&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">new&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ClassPathResource&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;applicationContext.xml&amp;#34;&lt;/span>&lt;span class="p">));&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 2. 查找 Bean（按名称）&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">factory&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;userService&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 3. 按类型查找（Spring 5+）&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">factory&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">class&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 4. 按注解查找&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">factory&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBeansWithAnnotation&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">class&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>特点&lt;/strong>：&lt;/p>
+&lt;ul>
+&lt;li>最原始的 IoC 容器接口&lt;/li>
+&lt;li>需要手动处理类型转换&lt;/li>
+&lt;li>适用于简单场景（现代项目更常用 &lt;code>ApplicationContext&lt;/code>）&lt;/li>
+&lt;/ul>
+&lt;h4 id="通过-applicationcontext-接口">通过 &lt;code>ApplicationContext&lt;/code> 接口
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 1. 初始化容器（XML 配置）&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">ApplicationContext&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">new&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ClassPathXmlApplicationContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;applicationContext.xml&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 2. 按名称查找&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;userService&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 3. 按类型查找（推荐）&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">class&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 4. 按名称+类型查找（无需强制转换）&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;userService&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">class&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>特点&lt;/strong>：&lt;/p>
+&lt;ul>
+&lt;li>企业级容器接口，支持事件、国际化等扩展功能&lt;/li>
+&lt;li>推荐使用 &lt;code>getBean(Class&amp;lt;T&amp;gt;)&lt;/code> 避免类型转换错误&lt;/li>
+&lt;/ul>
+&lt;h4 id="通过-objectprovider延迟可选依赖查找">通过 &lt;code>ObjectProvider&lt;/code>（延迟/可选依赖查找）
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 注入 ObjectProvider（Spring 4.3+）&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nd">@Autowired&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="kd">private&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ObjectProvider&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userServiceProvider&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 延迟获取 Bean&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userServiceProvider&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getIfAvailable&lt;/span>&lt;span class="p">();&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 处理多个候选 Bean&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userServiceProvider&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getIfUnique&lt;/span>&lt;span class="p">();&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 显式指定条件（如通过 @Qualifier 的变体）&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userServiceProvider&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getObject&lt;/span>&lt;span class="p">();&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>特点&lt;/strong>：&lt;/p>
+&lt;ul>
+&lt;li>支持延迟加载和可选依赖&lt;/li>
+&lt;li>解决 &lt;code>NoUniqueBeanDefinitionException&lt;/code> 问题&lt;/li>
+&lt;li>结合 &lt;code>@Lazy&lt;/code> 注解可实现懒加载&lt;/li>
+&lt;/ul>
+&lt;h4 id="通过-autowired--applicationcontextaware">通过 &lt;code>@Autowired&lt;/code> + &lt;code>ApplicationContextAware&lt;/code>
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@Component&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">class&lt;/span> &lt;span class="nc">MyBean&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">implements&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ApplicationContextAware&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">private&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ApplicationContext&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nd">@Override&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">setApplicationContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ApplicationContext&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">context&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">doSomething&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">class&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>特点&lt;/strong>：&lt;/p>
+&lt;ul>
+&lt;li>将容器上下文注入到 Bean 中&lt;/li>
+&lt;li>适用于需要动态查找的场景&lt;/li>
+&lt;/ul>
+&lt;h4 id="通过注解扫描基于-componentscan">通过注解扫描（基于 &lt;code>@ComponentScan&lt;/code>）
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@Configuration&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nd">@ComponentScan&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;com.example&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">class&lt;/span> &lt;span class="nc">AppConfig&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 初始化容器&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">ApplicationContext&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">new&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">AnnotationConfigApplicationContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">AppConfig&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">class&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 查找带有 @Component 的 Bean&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserRepository&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">repo&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UserRepository&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">class&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>特点&lt;/strong>：&lt;/p>
+&lt;ul>
+&lt;li>结合组件扫描自动注册 Bean&lt;/li>
+&lt;li>隐式依赖查找的基础&lt;/li>
+&lt;/ul>
+&lt;h4 id="通过-jndi-查找传统方式">通过 JNDI 查找（传统方式）
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 在 Spring XML 配置中声明 JNDI 资源&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">jee&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">jndi&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">lookup&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;dataSource&amp;#34;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">jndi&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;java:comp/env/jdbc/mydb&amp;#34;&lt;/span>&lt;span class="o">/&amp;gt;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 通过容器查找&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">DataSource&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dataSource&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">DataSource&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;dataSource&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>特点&lt;/strong>：&lt;/p>
+&lt;ul>
+&lt;li>适用于 Java EE 环境整合&lt;/li>
+&lt;li>现代项目更多使用 &lt;code>@Bean&lt;/code> 配置数据源&lt;/li>
+&lt;/ul>
+&lt;h4 id="通过静态方法web-环境专用">通过静态方法（Web 环境专用）
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 获取 WebApplicationContext（如 Servlet 环境）&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">WebApplicationContext&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">WebApplicationContextUtils&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getWebApplicationContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">servletContext&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1">// 查找 Bean&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">userService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">getBean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UserService&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">class&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="对比">对比
+&lt;/h4>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>方式&lt;/th>
+&lt;th>适用场景&lt;/th>
+&lt;th>优点&lt;/th>
+&lt;th>缺点&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>BeanFactory&lt;/code>&lt;/td>
+&lt;td>简单容器操作&lt;/td>
+&lt;td>轻量级&lt;/td>
+&lt;td>功能有限&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>ApplicationContext&lt;/code>&lt;/td>
+&lt;td>企业级应用（主流选择）&lt;/td>
+&lt;td>功能全面&lt;/td>
+&lt;td>稍重&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>ObjectProvider&lt;/code>&lt;/td>
+&lt;td>处理延迟/可选依赖&lt;/td>
+&lt;td>解决多候选 Bean 问题&lt;/td>
+&lt;td>需要 Spring 4.3+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>@Autowired&lt;/code> + 上下文&lt;/td>
+&lt;td>动态查找场景&lt;/td>
+&lt;td>灵活&lt;/td>
+&lt;td>侵入性强&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>注解扫描&lt;/td>
+&lt;td>自动装配的基础&lt;/td>
+&lt;td>简化配置&lt;/td>
+&lt;td>需配合组件扫描&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>推荐实践&lt;/strong>：&lt;/p>
+&lt;ul>
+&lt;li>优先使用依赖注入（被动获取）&lt;/li>
+&lt;li>仅在需要动态获取时使用依赖查找（如工厂模式、插件化架构）&lt;/li>
+&lt;li>现代项目首选 &lt;code>ApplicationContext.getBean()&lt;/code> 或 &lt;code>ObjectProvider&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h2 id="依赖注入">依赖注入
+&lt;/h2>&lt;p>依赖注入（Dependency Inject, DI）是 Spring 框架的核心功能，体现了控制反转（IoC）的设计原则。通过 DI，Spring IoC 容器负责创建和管理 bean 的依赖，并将这些依赖注入到目标 bean 中。注入方式包括：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>构造函数注入&lt;/strong>：通过构造函数传递依赖。
+&lt;ul>
+&lt;li>优点
+&lt;ul>
+&lt;li>使用 final 关键字，不可变，对象创建后，依赖不可变&lt;/li>
+&lt;li>依赖关系明确，显著降低了组件之间的耦合性，使代码更易于测试和维护。&lt;/li>
+&lt;li>易于测试，可以直接传递模拟依赖&lt;/li>
+&lt;li>Spring 会在启动时确保所有依赖都已注入，避免运行时空指针异常&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>缺点
+&lt;ul>
+&lt;li>如果依赖多，构造函数可能过长&lt;/li>
+&lt;li>缺乏灵活性，创建后无法更改依赖&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>setter 注入&lt;/strong>：通过 setter 方法设置依赖。
+&lt;ul>
+&lt;li>优点
+&lt;ul>
+&lt;li>灵活，可在对象创建后设置或更改依赖&lt;/li>
+&lt;li>适合可选依赖，可能不总是需要的&lt;/li>
+&lt;li>易于扩展，如果后期需要添加新依赖，只需添加新的 setter 方法&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>缺点
+&lt;ul>
+&lt;li>对象可变，可能导致状态不一致&lt;/li>
+&lt;li>未设置依赖，导致空指针异常&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>字段注入&lt;/strong>：通过注解（如 @Autowired）直接在字段上注入依赖，Spring 会使用反射机制在对象创建后自动设置字段的值。
+&lt;ul>
+&lt;li>优点
+&lt;ul>
+&lt;li>代码简洁，无需编写 setter 或构造函数&lt;/li>
+&lt;li>使用简单，易于实现&lt;/li>
+&lt;li>Spring 会在启动时确保依赖注入，减少手动配置&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>缺点
+&lt;ul>
+&lt;li>与 Spring 框架紧密耦合，增加依赖&lt;/li>
+&lt;li>依赖关系不显眼，测试可能更复杂&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">class&lt;/span> &lt;span class="nc">MyService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">private&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">final&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MyDependency&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c1">// 构造函数注入&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nd">@Autowired&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">MyService&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">MyDependency&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">dependency&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">doSomething&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">execute&lt;/span>&lt;span class="p">();&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">class&lt;/span> &lt;span class="nc">MyService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">private&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MyDependency&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c1">// Setter 注入&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nd">@Autowired&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">setDependency&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">MyDependency&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="na">dependency&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">class&lt;/span> &lt;span class="nc">MyService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c1">// 字段注入&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nd">@Autowired&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">private&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MyDependency&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="依赖来源">依赖来源
+&lt;/h2>&lt;p>&lt;strong>依赖对象的来源&lt;/strong>主要就是 Spring IoC 容器（&lt;code>BeanFactory&lt;/code> 或 &lt;code>ApplicationContext&lt;/code>）本身。容器根据 XML、注解、Java Config 等方式加载 bean 定义并实例化这些对象，管理它们的生命周期，然后通过依赖注入或依赖查找将它们提供给应用使用。&lt;/p>
+&lt;ul>
+&lt;li>自定义 Bean
+&lt;ul>
+&lt;li>自己编写并交给 Spring 管理的类，比如带有 &lt;code>@Component&lt;/code>、&lt;code>@Service&lt;/code>、&lt;code>@Repository&lt;/code>、&lt;code>@Controller&lt;/code> 等注解的类，或者在 XML/JavaConfig 中显式声明的 Bean。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>容器内建的 Bean
+&lt;ul>
+&lt;li>Spring 容器在启动或运行过程中，会自动创建并维护一些基础设施类或辅助功能类，供框架内部或用户使用&lt;/li>
+&lt;li>比如 &lt;code>ApplicationContext&lt;/code> 自身、&lt;code>Environment&lt;/code>、&lt;code>ResourceLoader&lt;/code>、&lt;code>ConversionService&lt;/code>、&lt;code>MessageSource&lt;/code>、&lt;code>BeanFactoryPostProcessor&lt;/code>、&lt;code>BeanPostProcessor&lt;/code> 以及各种内部用来处理注解、AOP、事务等功能的 Bean&lt;/li>
+&lt;li>&lt;code>Environment environment = applicationContext.getBean(Environment.class);&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>容器内建的依赖，（依赖注入）
+&lt;ul>
+&lt;li>指的是那些不一定以 Bean 形式出现，但由容器提供、可被注入或查找的依赖。例如：&lt;/li>
+&lt;li>&lt;code>BeanFactory&lt;/code> / &lt;code>ApplicationContext&lt;/code>：在使用 &lt;code>@Autowired&lt;/code> 时可以直接注入 &lt;code>ApplicationContext&lt;/code>；&lt;/li>
+&lt;li>环境变量、配置属性：通过 &lt;code>@Value(&amp;quot;${property}&amp;quot;)&lt;/code> 或 &lt;code>Environment&lt;/code> 对象获取；&lt;/li>
+&lt;li>事件发布器（&lt;code>ApplicationEventPublisher&lt;/code>）、任务调度器（&lt;code>TaskScheduler&lt;/code>）等容器级别的基础依赖。&lt;/li>
+&lt;li>这些依赖在某些情况下也会以 Bean 的形式出现，但总体上它们属于 Spring 内部或与运行环境强相关的内容，是容器层面“提供”的依赖。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="元信息">元信息
+&lt;/h2>&lt;ul>
+&lt;li>&lt;strong>Bean 的标识&lt;/strong>
+&lt;ul>
+&lt;li>包括 Bean 名称（&lt;code>id&lt;/code> 或 &lt;code>name&lt;/code>）、Bean 所对应的类名、别名等。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Bean 的作用域（Scope）&lt;/strong>
+&lt;ul>
+&lt;li>常见的有 &lt;code>singleton&lt;/code>、&lt;code>prototype&lt;/code>、&lt;code>request&lt;/code>、&lt;code>session&lt;/code> 等。&lt;/li>
+&lt;li>用于决定容器如何缓存或创建 Bean 实例。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>依赖注入信息&lt;/strong>
+&lt;ul>
+&lt;li>包括构造器参数、Setter 方法注入、字段注入等。&lt;/li>
+&lt;li>哪些依赖是必须的？哪些是可选的？&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>生命周期回调（Lifecycle callbacks）&lt;/strong>：
+&lt;ul>
+&lt;li>初始化方法（&lt;code>init-method&lt;/code> 或 &lt;code>@PostConstruct&lt;/code>）、&lt;/li>
+&lt;li>销毁方法（&lt;code>destroy-method&lt;/code> 或 &lt;code>@PreDestroy&lt;/code>）等&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>条件或环境&lt;/strong>：
+&lt;ul>
+&lt;li>比如 &lt;code>@Conditional&lt;/code> 注解可以决定是否加载某个 Bean；&lt;/li>
+&lt;li>或者 &lt;code>@Profile&lt;/code> 控制在特定环境（dev, test, prod）下是否启用某些 Bean。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>其他配置&lt;/strong>：
+&lt;ul>
+&lt;li>是否使用 AOP、事务等功能；&lt;/li>
+&lt;li>是否启用延迟加载（lazy-init）；&lt;/li>
+&lt;li>是否是自动装配（autowire），等等。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="配置元信息">配置元信息
+&lt;/h3>&lt;ul>
+&lt;li>Bean 定义配置
+&lt;ul>
+&lt;li>基于 XML 文件&lt;/li>
+&lt;li>基于 Properties 文件&lt;/li>
+&lt;li>基于 Java 注解&lt;/li>
+&lt;li>基于 Java API&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>IoC 容器配置
+&lt;ul>
+&lt;li>基于 XML 文件&lt;/li>
+&lt;li>基于 Java 注解&lt;/li>
+&lt;li>基于 Java API&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>外部化属性配置
+&lt;ul>
+&lt;li>基于 Java 注解，@Value&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="autowired-和-resource-的区别">@Autowired 和 @Resource 的区别
+&lt;/h2>&lt;h3 id="注入机制">注入机制
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>@Autowired&lt;/strong> 是基于类型的注入。
+&lt;ul>
+&lt;li>它会查找与字段或参数类型匹配的 bean。例如，如果一个字段是 MyDependency 类型，Spring 会注入所有实现 MyDependency 接口的 bean。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>@Resource&lt;/strong> 是基于名称的注入。
+&lt;ul>
+&lt;li>它会根据字段名称或显式指定的名称查找 bean。例如，如果字段名为 dependency，它会查找名为 &amp;ldquo;dependency&amp;rdquo; 的 bean。&lt;/li>
+&lt;li>@Resource 还可以用于注入资源（如 DataSource），而不仅仅是 bean，这在某些复杂场景下可能更灵活。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="是否必需">是否必需
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>@Autowired&lt;/strong> 默认是必需的。如果找不到匹配的 bean，Spring 会抛出异常。但你可以通过 required = false使它可选。&lt;/li>
+&lt;li>&lt;strong>@Resource&lt;/strong> 默认是可选的。如果找不到匹配的 bean，字段会保持为 null，无需额外配置。&lt;/li>
+&lt;/ul>
+&lt;h3 id="标准与框架">标准与框架
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>@Autowired&lt;/strong> 是 Spring 框架专有的注解，适合深度集成 Spring 的项目。&lt;/li>
+&lt;li>&lt;strong>@Resource&lt;/strong> 是 Java 标准的一部分（JSR-250），在 Java EE 环境中也常用，适合希望减少框架依赖的项目。&lt;/li>
+&lt;/ul>
+&lt;h3 id="使用场景">使用场景
+&lt;/h3>&lt;ul>
+&lt;li>如果你需要基于类型的注入，且依赖是必需的，推荐使用 @Autowired。例如：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">class&lt;/span> &lt;span class="nc">MyService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nd">@Autowired&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">private&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MyDependency&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// 注入类型为 MyDependency 的 bean&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>如果你需要基于名称的注入，或依赖是可选的，推荐使用 @Resource。例如：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kd">class&lt;/span> &lt;span class="nc">MyService&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nd">@Resource&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s">&amp;#34;specificDependency&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kd">private&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MyDependency&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dependency&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c1">// 注入名为 &amp;#34;specificDependency&amp;#34; 的 bean&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>Spring学习笔记01 - Spring Framework</title><link>https://codeSu97.github.io/p/spring-learning-01/</link><pubDate>Sun, 10 Mar 2024 19:49:27 +0800</pubDate><author>xyp_selune@163.com (Selune)</author><guid>https://codeSu97.github.io/p/spring-learning-01/</guid><description>&lt;blockquote>
+&lt;p>&lt;blockquote>
+&lt;/blockquote>
+&lt;p>Spring Framework 为基于 Java 的现代企业应用程序提供了一个全面的编程和配置模型，适用于任何类型的部署平台。&lt;/p>
+&lt;p>Spring 的一个关键要素是应用层面的基础架构支持：Spring 专注于企业应用程序的 “管道”，因此团队可以专注于应用程序级的业务逻辑，而无需与特定部署环境进行不必要的绑定。&lt;/p>
+&lt;/p>&lt;span class="cite">&lt;span>― &lt;/span>&lt;span>Spring Framework, &lt;/span>&lt;a href="#ZgotmplZ">&lt;cite>spring.io&lt;/cite>&lt;/a>&lt;/span>&lt;/blockquote>
+&lt;h2 id="spring-framework-有哪些核心模块">Spring Framework 有哪些核心模块?
+&lt;/h2>&lt;ul>
+&lt;li>spring-core
+&lt;ul>
+&lt;li>Spring 基础的API模块，如资源管理、泛型处理&lt;/li>
+&lt;li>提供框架的基本工具类和核心工具，如依赖注入（DI）的实现、IoC 容器的基本功能等。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>spring-beans
+&lt;ul>
+&lt;li>用于管理和配置应用程序中的 bean，Bean对象的创建、生命周期管理，依赖查找、依赖注入&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>sprign-context
+&lt;ul>
+&lt;li>事件驱动、注解驱动、模块驱动等&lt;/li>
+&lt;li>建立在 Core 和 Beans 之上，提供类似于 JNDI 的功能，以及国际化、事件传播、资源加载等功能。它类似于一个轻量级的容器，便于集成不同的框架。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>spring-expression
+&lt;ul>
+&lt;li>Spring 表达式 语言模块&lt;/li>
+&lt;li>提供强大的表达式语言支持，可以在 XML 或注解中动态计算值，增强了配置和动态功能的灵活性。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>spring-aop
+&lt;ul>
+&lt;li>Spring AOP 处理，如动态代理、AOP字节码提升&lt;/li>
+&lt;li>实现面向切面编程的支持，通过切面（Aspect）来定义横切关注点，如日志、安全、事务等，从而实现与业务逻辑的分离。这一模块使得应用程序能够在不修改核心业务代码的情况下添加额外的行为。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>spring-jdbc
+&lt;ul>
+&lt;li>封装了 JDBC 操作，提供了模板化方法来简化数据库访问和异常处理，减少了样板代码。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>spring-orm
+&lt;ul>
+&lt;li>为主流 ORM 框架（如 Hibernate、JPA、MyBatis 等）提供支持，简化数据持久化操作的配置和集成。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>spring-tx
+&lt;ul>
+&lt;li>提供声明式事务管理，帮助开发者在不同的数据访问技术之间保持一致的事务管理策略。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>spring-web
+&lt;ul>
+&lt;li>为开发 web 应用提供基本的支持，包括 WebSocket、Multipart 文件上传、以及 HTTP 请求和响应处理。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>spring-webmvc
+&lt;ul>
+&lt;li>实现了 Model-View-Controller (MVC) 设计模式，提供了一整套用于构建基于请求-响应模型的 Web 应用程序的组件。通过该模块，可以轻松构建松耦合、可测试的 Web 应用。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>spring-test
+&lt;ul>
+&lt;li>提供对 Spring 应用的单元测试和集成测试的支持，包括对 JUnit 和 TestNG 的集成，帮助开发者在不依赖外部服务器的情况下模拟和测试应用的行为，确保代码质量和稳定性。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="优势">优势
+&lt;/h2>&lt;ul>
+&lt;li>模块化和灵活性：Spring 允许开发者选择需要的组件，支持 XML 和基于注解的配置，适合各种项目需求。&lt;/li>
+&lt;li>轻量级和便携性：无需繁重的应用服务器，可以在像 Tomcat 这样的 servlet 容器上运行，降低资源占用。&lt;/li>
+&lt;li>依赖注入和控制反转（IoC）：促进组件松耦合，易于测试和扩展。&lt;/li>
+&lt;li>面向切面编程（AOP）：模块化横切关注点，如日志、安全和事务管理，提升代码复用性。&lt;/li>
+&lt;li>丰富的生态系统：提供数据访问、Web 服务、安全等多个模块，满足企业级应用需求。&lt;/li>
+&lt;li>易于测试：依赖注入功能简化测试数据注入，确保应用可靠性。&lt;/li>
+&lt;li>一致的 API：为异常处理、事务管理等提供统一接口，简化开发。&lt;/li>
+&lt;li>长期维护和可靠性：Spring 历史悠久，持续更新，适合长期项目。&lt;/li>
+&lt;/ul>
+&lt;h2 id="不足">不足
+&lt;/h2>&lt;ul>
+&lt;li>学习曲线陡峭：对于新手或不熟悉 DI 和 AOP 的开发者，学习成本较高。&lt;/li>
+&lt;li>复杂性：功能丰富可能导致项目复杂，尤其对小型项目不必要。&lt;/li>
+&lt;li>配置冗长：尽管注解减少了 XML 配置，但某些设置仍可能繁琐。&lt;/li>
+&lt;li>安全问题：Spring 提供安全特性，但配置不当可能导致如跨站脚本攻击（XSS）等漏洞，需额外注意。&lt;/li>
+&lt;li>性能开销：抽象层可能引入轻微性能开销，但通常对大多数用例影响不大。&lt;/li>
+&lt;/ul></description></item></channel></rss>

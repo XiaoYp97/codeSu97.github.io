@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>防火墙 on XiaoYp - Blog</title><link>https://codeSu97.github.io/categories/%E9%98%B2%E7%81%AB%E5%A2%99/</link><description>Recent content in 防火墙 on XiaoYp - Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>xyp_selune@163.com (Selune)</managingEditor><webMaster>xyp_selune@163.com (Selune)</webMaster><lastBuildDate>Wed, 28 Dec 2022 21:15:49 +0800</lastBuildDate><atom:link href="https://codeSu97.github.io/categories/%E9%98%B2%E7%81%AB%E5%A2%99/index.xml" rel="self" type="application/rss+xml"/><item><title>Iptables</title><link>https://codeSu97.github.io/p/iptables/</link><pubDate>Wed, 28 Dec 2022 21:15:49 +0800</pubDate><author>xyp_selune@163.com (Selune)</author><guid>https://codeSu97.github.io/p/iptables/</guid><description>&lt;h2 id="iptables-是什么">&lt;strong>iptables 是什么&lt;/strong>
+&lt;/h2>&lt;p>iptables 是运行在用户空间的应用软件，通过控制Linux内核netfilter模块，来管理网络数据包的处理和转发。iptables只支持处理ipv4数据包，对于ipv6数据包，则需要ip6tables。&lt;/p>
+&lt;h2 id="iptables命令介绍">&lt;strong>iptables命令介绍&lt;/strong>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># iptables --help&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">iptables v1.4.21
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Usage: iptables -&lt;span class="o">[&lt;/span>ACD&lt;span class="o">]&lt;/span> chain rule-specification &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -I chain &lt;span class="o">[&lt;/span>rulenum&lt;span class="o">]&lt;/span> rule-specification &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -R chain rulenum rule-specification &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -D chain rulenum &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -&lt;span class="o">[&lt;/span>LS&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>chain &lt;span class="o">[&lt;/span>rulenum&lt;span class="o">]]&lt;/span> &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -&lt;span class="o">[&lt;/span>FZ&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>chain&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -&lt;span class="o">[&lt;/span>NX&lt;span class="o">]&lt;/span> chain
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -E old-chain-name new-chain-name
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -P chain target &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -h &lt;span class="o">(&lt;/span>print this &lt;span class="nb">help&lt;/span> information&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="iptables基本命令">&lt;strong>iptables基本命令&lt;/strong>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">--append -A chain 添加一个规则到链的末尾
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--check -C chain 检查某一条链是否存在
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--delete -D chain 删除匹配的链
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--delete -D chain rulenum 删除指定链的某一条规则
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--insert -I chain &lt;span class="o">[&lt;/span>rulenum&lt;span class="o">]&lt;/span> 根据给出的规则序号向所选链中插入一条或更多规则。所以，如果规则序号为1，
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 规则会被插入链的头部。这也是不指定规则序号时的默认方式。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--replace -R chain rulenum 修改指定链中的某一条规则
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--list -L &lt;span class="o">[&lt;/span>chain &lt;span class="o">[&lt;/span>rulenum&lt;span class="o">]]&lt;/span> 列出指定链中的规则
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--list-rules -S &lt;span class="o">[&lt;/span>chain &lt;span class="o">[&lt;/span>rulenum&lt;span class="o">]]&lt;/span> 打印出指定链中的规则
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--flush -F &lt;span class="o">[&lt;/span>chain&lt;span class="o">]&lt;/span> 删除指定链中的规则
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--zero -Z &lt;span class="o">[&lt;/span>chain &lt;span class="o">[&lt;/span>rulenum&lt;span class="o">]]&lt;/span> 把指定链，或者表中的所有链上的所有计数器清零
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--new -N chain 创建一条用户自定义链
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--delete-chain -X &lt;span class="o">[&lt;/span>chain&lt;span class="o">]&lt;/span> 删除一条用户自定义链
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--policy -P chain target 该表某条链的策略
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--rename-chain -E old-chain new-chain 修改链的名称&lt;span class="o">(&lt;/span>只有用户自定义链的名称可以被修改）
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="iptables选项参数">&lt;strong>iptables选项参数&lt;/strong>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> --protocol -p proto 规则或者包检查的协议。指定协议可以是tcp、udp、icmp中的一个或全部，也可以是数值，代表这些协议中的某一个。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 当然也可以使用在/etc/protocols中定义的协议名。在协议名前加&lt;span class="s1">&amp;#39;!&amp;#39;&lt;/span>表示相反的规则。数字0相当于all。Protocol
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> all会匹配所有协议，而且这是缺省的选项。在和check命令结合时，all可以不被使用
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> --source -s address&lt;span class="o">[&lt;/span>/mask&lt;span class="o">][&lt;/span>...&lt;span class="o">]&lt;/span> 指定源地址，可以是主机名、网络名或IP地址。mask说明可以是网络掩码或清楚的数字。标志--src是这个选项的简写。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> --destination -d address&lt;span class="o">[&lt;/span>/mask&lt;span class="o">][&lt;/span>...&lt;span class="o">]&lt;/span> 指定目标地址。标志--dst是这个选项的简写
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--jump -j target 执行指定的动作
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--goto -g chain 跳转到指定的链
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--match -m match 扩展匹配
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--numeric -n 以数字的形式显示IP地址和端口
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> --in-interface -i input name&lt;span class="o">[&lt;/span>+&lt;span class="o">]&lt;/span> 匹配由指定网络接口进入的数据包
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> --out-interface -o output name&lt;span class="o">[&lt;/span>+&lt;span class="o">]&lt;/span> 由指定接口发出的数据包
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> --fragment -f 这意味着在分片的包中，规则只询问第二及以后的片
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--exact -x 扩展数字。显示包和字节计数器的精确值，代替用K、M、G表示的约数。这个选项仅能用于-L选项
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--line-numbers 当列表显示规则时，在每个规则前面加上行号，与该规则在链中的位置相对应。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="1-针对-tcp-的扩展">&lt;strong>1. 针对 tcp 的扩展&lt;/strong>
+&lt;/h4>&lt;p>当&lt;code>--protocol tcp&lt;/code>被指定，且其他匹配的扩展未被指定时，这些扩展被装载。它提供以下选项：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">--source-port &lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>port&lt;span class="o">[&lt;/span>:port&lt;span class="o">]]&lt;/span> 源端口或端口范围指定，也可以使用服务名或端口号。如果使用端口范围，若首端口号忽略则默认为0，若尾端口号忽略则
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 默认为65535。这个选项可以简写为--sport
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--destionation-port &lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>port:&lt;span class="o">[&lt;/span>port&lt;span class="o">]]&lt;/span> 目标端口或端口范围指定。这个选项可以使用--dport别名来代替
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--tcp-flags &lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> mask comp 匹配指定的TCP标记。第一个参数是我们要检查的标记，一个用逗号分开的列表，第二个参数是用逗号分开的标记表,是必须
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 被设置的。标记如下：SYN ACK FIN RST URG PSH ALL NONE。例如我们有如下这条命令：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iptables -A FORWARD -p tcp --tcp-flags SYN,ACK,FIN,RST SYN
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 上面这条命令只匹配那些SYN标志被设置而ACK、FIN和RST标记没有被设置的包
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> --syn 只匹配那些设置了SYN位而清除了ACK和FIN位的TCP包。这些包用于TCP连接初始化时发出请求。例如，大量的这种包进入一个
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 接口发生堵塞时会阻止进入的TCP连接，而出去的TCP连接不会受到影响。这等于：--tcp-flags SYN,RST,ACK SYN
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--tcp-option &lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> number 匹配设置了TCP选项的数据包
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="2-针对-udp-的扩展">&lt;strong>2. 针对 udp 的扩展&lt;/strong>
+&lt;/h4>&lt;p>当&lt;code>--protocol udp&lt;/code>被指定，且其他匹配的扩展未被指定时，这些扩展被装载。它提供以下选项：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">--source-port &lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>port:&lt;span class="o">[&lt;/span>port&lt;span class="o">]]&lt;/span> 源端口或端口范围指定
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--destionation-port &lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>port:&lt;span class="o">[&lt;/span>port&lt;span class="o">]]&lt;/span> 目标端口或端口范围指定
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="3-针对-icmp-的扩展">&lt;strong>3. 针对 ICMP 的扩展&lt;/strong>
+&lt;/h4>&lt;p>当&lt;code>--protocol icmp&lt;/code>被指定，且其他匹配的扩展未被指定时，这些扩展被装载。它提供以下选项：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">--icmp-type &lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> typename 这个选项允许指定ICMP类型，可以是一个数值型的ICMP类型，或者是某个由命令iptables -p icmp -h所显示的ICMP类型名
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="4-针对-mac-的扩展">&lt;strong>4. 针对 mac 的扩展&lt;/strong>
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">--mac-source &lt;span class="o">[&lt;/span>!&lt;span class="o">]&lt;/span> address 匹配物理地址。注意它只对来自以太设备并进入PREROUTING、FORWORD和INPUT链的包有效。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="5-针对-limit-的扩展">&lt;strong>5. 针对 limit 的扩展&lt;/strong>
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">--limit rate 最大平均匹配速率：可赋的值有&lt;span class="s1">&amp;#39;/second&amp;#39;&lt;/span>, &lt;span class="s1">&amp;#39;/minute&amp;#39;&lt;/span>, &lt;span class="s1">&amp;#39;/hour&amp;#39;&lt;/span>, or &lt;span class="s1">&amp;#39;/day&amp;#39;&lt;/span>这样的单位，默认是3/hour
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--limit-burst number 待匹配包初始个数的最大值:若前面指定的极限还没达到这个数值,则概数字加1.默认值为5
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="iptables-targets-介绍">&lt;strong>iptables targets 介绍&lt;/strong>
+&lt;/h2>&lt;p>iptables的&lt;code>-j&lt;/code>选项后面对应的是要执行的target。其中有些target具有一些扩展选项，下面我们会一并介绍：&lt;/p>
+&lt;h3 id="1-accept">&lt;strong>1. ACCEPT&lt;/strong>
+&lt;/h3>&lt;p>表示接收匹配的数据包&lt;/p>
+&lt;h3 id="2-drop">&lt;strong>2. DROP&lt;/strong>
+&lt;/h3>&lt;p>表示丢弃匹配的数据包&lt;/p>
+&lt;h3 id="3-reject">&lt;strong>3. REJECT&lt;/strong>
+&lt;/h3>&lt;p>作为对匹配的包的响应，返回一个错误的包：其他情况下与DROP 相同&lt;/p>
+&lt;p>此目标只适用于INPUT、FORWORD和OUTPUT，和调用这些的用户自定义链。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">--reject-with &lt;span class="nb">type&lt;/span> type可以是icmp-net-unreachable、icmp-host-unreachable、icmp-port-nreachable、icmp-proto-unreachable、
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> icmp-net-prohibited或者icmp-host-prohibited，该类型会返回相应的ICMP错误信息（默认是port-unreachable）
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--echo-reply 它只能用于指定ICMP ping包的规则中，生成ping的回应
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--tcp-reset 可以用于在INPUT链中,或自INPUT链调用的规则，只匹配TCP协议：将回应一个TCP RST包。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="4-redirect">&lt;strong>4. REDIRECT&lt;/strong>
+&lt;/h3>&lt;p>表示重定向匹配的数据包，只适用于nat表的PREROUTING和OUTPUT，和只调用它们的用户自定义链。它修改包的目标IP地址来发送包到机器自身（本地生成的包被安置为地址127.0.0.1）&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">--to-ports &lt;span class="o">[&lt;/span>port-port&lt;span class="o">]&lt;/span> 指定使用的目的端口或端口范围：不指定的话，目标端口不会被修改。只能用于指定了-p tcp 或 -p udp的规则。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="iptables常用命令">&lt;strong>iptables常用命令&lt;/strong>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 新增规则# 指定 ip 访问指定端口&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">iptables -I INPUT -s &amp;lt;ip&amp;gt; -p tcp -m tcp --dport &amp;lt;port&amp;gt; -j ACCEPT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 允许所有ip访问指定端口&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">iptables -I INPUT -p tcp -m tcp --dport &amp;lt;port&amp;gt; -j ACCEPT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看所有规则&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">iptables -n -L
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看所有规则，带 序号&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">iptables -n -L --line-number
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 删除规则# 删除 INPUT 的 序号为 1 的规则&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">iptables -D INPUT &lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>
